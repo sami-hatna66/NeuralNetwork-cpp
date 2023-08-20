@@ -1,9 +1,10 @@
 #include "Layer.hpp"
 
 // FOR TESTING
-Layer::Layer(int numInputs, int numNeurons, int num) {
+template <typename T>
+Layer<T>::Layer(int numInputs, int numNeurons, int num) {
     for (int i = 0; i < numInputs; i++) {
-        weightMomentums.push_back(std::vector<double>(numNeurons, 0.0));
+        weightMomentums.push_back(std::vector<T>(numNeurons, 0.0));
         weightCache.push_back(weightMomentums[i]);
     }
 
@@ -119,32 +120,34 @@ Layer::Layer(int numInputs, int numNeurons, int num) {
        { 3.29622976e-03,  1.28598399e-02, -1.50699839e-02}}};
     }
 
-    biases.push_back(std::vector<double>(numNeurons, 0.0));
+    biases.push_back(std::vector<T>(numNeurons, 0.0));
     biasMomentums.push_back(biases[0]);
     biasCache.push_back(biases[0]);
     dBiases.push_back({});
 }
 
-Layer::Layer(int numInputs, int numNeurons) {
+template <typename T>
+Layer<T>::Layer(int numInputs, int numNeurons) {
     std::random_device rd{};
     std::mt19937 gen{rd()};
-    std::normal_distribution<double> distr(0, 1);
-    weights.resize(numInputs, std::vector<double>(numNeurons));
+    std::normal_distribution<T> distr(0, 1);
+    weights.resize(numInputs, std::vector<T>(numNeurons));
     for (int i = 0; i < numInputs; ++i) {
         for (int j = 0; j < numNeurons; ++j) {
             weights[i][j] = 0.01 * distr(gen);
         }
-        weightMomentums.push_back(std::vector<double>(numNeurons, 0.0));
+        weightMomentums.push_back(std::vector<T>(numNeurons, 0.0));
         weightCache.push_back(weightMomentums[i]);
     }
 
-    biases.push_back(std::vector<double>(numNeurons, 0.0));
+    biases.push_back(std::vector<T>(numNeurons, 0.0));
     biasMomentums.push_back(biases[0]);
     biasCache.push_back(biases[0]);
     dBiases.push_back({});
 }
 
-void Layer::compute(const DoubleVec2d& pInputs) {
+template <typename T>
+void Layer<T>::compute(const Vec2d<T>& pInputs) {
     inputs = pInputs;
     output = inputs * weights;
     for (int i = 0; i < output.size(); i++) {
@@ -154,10 +157,11 @@ void Layer::compute(const DoubleVec2d& pInputs) {
     }
 }
 
-void Layer::backward(const DoubleVec2d& dValues) {
+template <typename T>
+void Layer<T>::backward(const Vec2d<T>& dValues) {
     dWeights = transpose(inputs) * dValues;
     dBiases.clear();
-    std::vector<double> sums(dValues[0].size(), 0.0);
+    std::vector<T> sums(dValues[0].size(), 0.0);
     for (int i = 0; i < dValues[0].size(); i++) {
         for (int j = 0; j < dValues.size(); j++) {
             sums[i] += dValues[j][i];
@@ -168,69 +172,87 @@ void Layer::backward(const DoubleVec2d& dValues) {
     dInputs = dValues * transpose(weights);
 }
 
-DoubleVec2d& Layer::getOutput() {
+template <typename T>
+Vec2d<T>& Layer<T>::getOutput() {
     return output;
 }
 
-DoubleVec2d& Layer::getWeights() {
+template <typename T>
+Vec2d<T>& Layer<T>::getWeights() {
     return weights;
 }
 
-DoubleVec2d& Layer::getBiases() {
+template <typename T>
+Vec2d<T>& Layer<T>::getBiases() {
     return biases;
 }
 
-DoubleVec2d& Layer::getDWeights() {
+template <typename T>
+Vec2d<T>& Layer<T>::getDWeights() {
     return dWeights;
 }
 
-DoubleVec2d& Layer::getDBiases() {
+template <typename T>
+Vec2d<T>& Layer<T>::getDBiases() {
     return dBiases;
 }
 
-DoubleVec2d& Layer::getDInputs() {
+template <typename T>
+Vec2d<T>& Layer<T>::getDInputs() {
     return dInputs;
 }
 
-DoubleVec2d& Layer::getWeightMomentums() {
+template <typename T>
+Vec2d<T>& Layer<T>::getWeightMomentums() {
     return weightMomentums;
 }
 
-DoubleVec2d& Layer::getBiasMomentums() {
+template <typename T>
+Vec2d<T>& Layer<T>::getBiasMomentums() {
     return biasMomentums;
 }
 
-DoubleVec2d& Layer::getWeightCache() {
+template <typename T>
+Vec2d<T>& Layer<T>::getWeightCache() {
     return weightCache;
 }
 
-DoubleVec2d& Layer::getBiasCache() {
+template <typename T>
+Vec2d<T>& Layer<T>::getBiasCache() {
     return biasCache;
 }
 
-void Layer::setWeightMomentums(const DoubleVec2d& newWeightMomentums) {
+template <typename T>
+void Layer<T>::setWeightMomentums(const Vec2d<T>& newWeightMomentums) {
     weightMomentums = newWeightMomentums;
 }
 
-void Layer::setBiasMomentums(const DoubleVec2d& newBiasMomentums) {
+template <typename T>
+void Layer<T>::setBiasMomentums(const Vec2d<T>& newBiasMomentums) {
     biasMomentums = newBiasMomentums;
 }
 
-void Layer::setWeights(const DoubleVec2d& newWeights) {
+template <typename T>
+void Layer<T>::setWeights(const Vec2d<T>& newWeights) {
     weights = newWeights;
 }
 
-void Layer::setBiases(const DoubleVec2d& newBiases) {
+template <typename T>
+void Layer<T>::setBiases(const Vec2d<T>& newBiases) {
     biases = newBiases;
 }
 
-void Layer::setWeightCache(const DoubleVec2d& newWeightCache) {
+template <typename T>
+void Layer<T>::setWeightCache(const Vec2d<T>& newWeightCache) {
     weightCache = newWeightCache;
 }
 
-void Layer::setBiasCache(const DoubleVec2d& newBiasCache) {
+template <typename T>
+void Layer<T>::setBiasCache(const Vec2d<T>& newBiasCache) {
     biasCache = newBiasCache;
 }
 
-
+// Explicit instantiations
+template class Layer<double>;
+template class Layer<float>;
 

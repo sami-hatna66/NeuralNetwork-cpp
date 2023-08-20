@@ -6,18 +6,19 @@
 
 namespace LossActivation {
 
+template <typename T>
 class SoftmaxCCE {
 private:
-    Activations::Softmax activation;
-    Loss::CategoricalCrossEntropy loss;
-    DoubleVec2d output;
-    DoubleVec2d dInputs;
+    Activations::Softmax<T> activation;
+    Loss::CategoricalCrossEntropy<T> loss;
+    Vec2d<T> output;
+    Vec2d<T> dInputs;
 public:
     SoftmaxCCE();
-    double compute(DoubleVec2d inputs, DoubleVec2d actualY);
-    void backward(DoubleVec2d dValues, DoubleVec2d actualY);
-    DoubleVec2d& getOutput();
-    DoubleVec2d& getDInputs();
+    T compute(Vec2d<T> inputs, Vec2d<T> actualY);
+    void backward(Vec2d<T> dValues, Vec2d<T> actualY);
+    Vec2d<T>& getOutput();
+    Vec2d<T>& getDInputs();
 };
 
 }

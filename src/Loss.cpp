@@ -2,19 +2,21 @@
 
 namespace Loss {
 
-double CategoricalCrossEntropy::calculate(DoubleVec2d& output, DoubleVec2d& y) {
+template <typename T>
+T CategoricalCrossEntropy<T>::calculate(Vec2d<T>& output, Vec2d<T>& y) {
     auto sampleLosses = compute(output, y);
 
-    double dataLoss =  std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0, std::plus<double>()) / sampleLosses.size();
+    T dataLoss =  std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0, std::plus<T>()) / sampleLosses.size();
     return dataLoss;
 }
 
-std::vector<double> CategoricalCrossEntropy::compute(DoubleVec2d& predictY, DoubleVec2d& actualY) {
+template <typename T>
+std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T>& predictY, Vec2d<T>& actualY) {
     int numSamples = predictY.size();
 
     // Trim data, prevents zero division
-    double lowerLimit = 0.0000001;
-    double upperLimit = 0.9999999;
+    T lowerLimit = 0.0000001;
+    T upperLimit = 0.9999999;
 
     for (int i = 0; i < predictY.size(); i++) {
         for (int j = 0; j < predictY[i].size(); j++) {
@@ -23,7 +25,7 @@ std::vector<double> CategoricalCrossEntropy::compute(DoubleVec2d& predictY, Doub
         }
     }
 
-    std::vector<double> pickedConfidences;
+    std::vector<T> pickedConfidences;
     if (actualY.size() == 1) {
         for (int i = 0; i < numSamples; i++) {
             pickedConfidences.push_back(predictY[i][actualY[0][i]]);
@@ -35,7 +37,7 @@ std::vector<double> CategoricalCrossEntropy::compute(DoubleVec2d& predictY, Doub
             }
         }
         for (int i = 0; i < predictY.size(); i++) {
-            pickedConfidences.push_back(std::accumulate(predictY[i].begin(), predictY[i].end(), 0.0, std::plus<double>()));
+            pickedConfidences.push_back(std::accumulate(predictY[i].begin(), predictY[i].end(), 0.0, std::plus<T>()));
         }
     }
 
@@ -45,21 +47,22 @@ std::vector<double> CategoricalCrossEntropy::compute(DoubleVec2d& predictY, Doub
     return pickedConfidences;
 }
 
-void CategoricalCrossEntropy::backward(DoubleVec2d& dValues, DoubleVec2d& actualY) {
+template <typename T>
+void CategoricalCrossEntropy<T>::backward(Vec2d<T>& dValues, Vec2d<T>& actualY) {
     dInputs.clear();
     int numSamples = dValues.size();
     int numLabels = dValues[0].size();
     if (actualY.size() == 1) {
-        DoubleVec2d oneHot;
+        Vec2d<T> oneHot;
         for (int i = 0; i < numSamples; i++) {
-            std::vector<double> newRow(numLabels, 0.0);
+            std::vector<T> newRow(numLabels, 0.0);
             newRow[actualY[0][i]] = 1.0;
             oneHot.push_back(newRow);
         }
         actualY = oneHot;
     }
     for (int i = 0; i < dValues.size(); i++) {
-        std::vector<double> newRow;
+        std::vector<T> newRow;
         for (int j = 0; j < dValues[i].size(); j++) {
             newRow.push_back((-actualY[i][j] / dValues[i][j]) / numSamples);
         }
@@ -67,8 +70,13 @@ void CategoricalCrossEntropy::backward(DoubleVec2d& dValues, DoubleVec2d& actual
     }
 }
 
-DoubleVec2d CategoricalCrossEntropy::getDInputs() {
+template <typename T>
+Vec2d<T> CategoricalCrossEntropy<T>::getDInputs() {
     return dInputs;
 }
+
+// Explicit instantiations
+template class CategoricalCrossEntropy<double>;
+template class CategoricalCrossEntropy<float>;
 
 }

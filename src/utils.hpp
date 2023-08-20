@@ -5,10 +5,16 @@
 #include <iostream>
 #include <iomanip>
 #include <cassert>
+#include <numeric>
 
-using DoubleVec2d = std::vector<std::vector<double>>;
+template <typename T>
+concept DecimalType = std::is_floating_point_v<T>;
 
-static void printVec(std::vector<double>& inp) {
+template <DecimalType T>
+using Vec2d = std::vector<std::vector<T>>;
+
+template <typename T>
+static void printVec(std::vector<T>& inp) {
     std::cout << std::setprecision(10);
     for (auto val : inp) {
         std::cout << val << ", ";
@@ -16,7 +22,8 @@ static void printVec(std::vector<double>& inp) {
     std::cout << std::endl << std::endl;
 }
 
-static void printVec(DoubleVec2d& inp) {
+template <typename T>
+static void printVec(Vec2d<T>& inp) {
     std::cout << std::setprecision(10);
     for (auto row : inp) {
         for (auto val : row) {
@@ -27,7 +34,8 @@ static void printVec(DoubleVec2d& inp) {
     std::cout << std::endl << std::endl;
 }
 
-static void printVec(const DoubleVec2d& inp) {
+template <typename T>
+static void printVec(const Vec2d<T>& inp) {
     std::cout << std::setprecision(10);
     for (auto row : inp) {
         for (auto val : row) {
@@ -38,31 +46,46 @@ static void printVec(const DoubleVec2d& inp) {
     std::cout << std::endl << std::endl;
 }
 
-DoubleVec2d operator*(const double num, const DoubleVec2d& mat);
+template <typename T>
+Vec2d<T> operator*(const T num, const Vec2d<T>& mat);
 
-DoubleVec2d operator*(const DoubleVec2d& mat, const double num);
+template <typename T>
+Vec2d<T> operator*(const Vec2d<T>& mat, const T num);
 
-DoubleVec2d operator*(const DoubleVec2d& a, const DoubleVec2d& b);
+template <typename T>
+Vec2d<T> operator*(const Vec2d<T>& a, const Vec2d<T>& b);
 
-DoubleVec2d operator/(const DoubleVec2d& mat, const double num);
+template <typename T>
+Vec2d<T> operator/(const Vec2d<T>& mat, const T num);
 
-DoubleVec2d operator/(const DoubleVec2d& a, const DoubleVec2d& b);
+template <typename T>
+Vec2d<T> operator/(const Vec2d<T>& a, const Vec2d<T>& b);
 
-DoubleVec2d operator-(const DoubleVec2d& mat, const double num);
+template <typename T>
+Vec2d<T> operator-(const Vec2d<T>& mat, const T num);
 
-DoubleVec2d operator-(const DoubleVec2d& a, const DoubleVec2d& b);
+template <typename T>
+Vec2d<T> operator-(const Vec2d<T>& a, const Vec2d<T>& b);
 
-DoubleVec2d operator+(const DoubleVec2d& mat, const double num);
+template <typename T>
+Vec2d<T> operator+(const Vec2d<T>& mat, const T num);
 
-DoubleVec2d operator+(const DoubleVec2d& a, const DoubleVec2d& b);
+template <typename T>
+Vec2d<T> operator+(const Vec2d<T>& a, const Vec2d<T>& b);
 
-DoubleVec2d exp(const DoubleVec2d& mat, const double exponent);
+template <typename T>
+Vec2d<T> power(const Vec2d<T>& mat, const T exponent);
 
-DoubleVec2d root(const DoubleVec2d& mat);
+template <typename T>
+Vec2d<T> root(const Vec2d<T>& mat);
 
-DoubleVec2d transpose(const DoubleVec2d& mat);
+template <typename T>
+Vec2d<T> transpose(const Vec2d<T>& mat);
 
-static DoubleVec2d spiralDataY = {{{
+template <typename T>
+T calculateAccuracy(const Vec2d<T>& output, const Vec2d<T>& actualY);
+
+static Vec2d<double> spiralDataY = {{{
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -79,7 +102,7 @@ static DoubleVec2d spiralDataY = {{{
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 }}};
 
-static DoubleVec2d spiralDataX = {{
+static Vec2d<double> spiralDataX = {{
     { 0.     ,     0.        },
     { 0.00316407,  0.00959266},
     {-0.01694864,  0.01099388},

@@ -7,31 +7,40 @@
 
 namespace Activations {
 
+template <typename T>
 class ActivationBase {
 protected:
-    DoubleVec2d inputs; 
-    DoubleVec2d output;
-    DoubleVec2d dInputs;
+    Vec2d<T> inputs; 
+    Vec2d<T> output;
+    Vec2d<T> dInputs;
 public:
     ActivationBase() {}
-    virtual void compute(const DoubleVec2d& pInputs) = 0;
-    virtual void backward(const DoubleVec2d& dValues) = 0;
-    DoubleVec2d& getOutput();
-    DoubleVec2d& getDInputs();
+    Vec2d<T>& getOutput();
+    Vec2d<T>& getDInputs();
 };
 
-class Relu : public ActivationBase {
+template <typename T>
+class Relu : public ActivationBase<T> {
+private:
+    using ActivationBase<T>::inputs;
+    using ActivationBase<T>::output;
+    using ActivationBase<T>::dInputs;
 public: 
     Relu() {}
-    void compute(const DoubleVec2d& pInputs) override;
-    void backward(const DoubleVec2d& pValues) override;
+    void compute(const Vec2d<T>& pInputs);
+    void backward(const Vec2d<T>& pValues);
 };
 
-class Softmax : public ActivationBase {
+template <typename T>
+class Softmax : public ActivationBase<T> {
+private:
+    using ActivationBase<T>::inputs;
+    using ActivationBase<T>::output;
+    using ActivationBase<T>::dInputs;
 public: 
     Softmax() {}
-    void compute(const DoubleVec2d& pInputs) override;
-    void backward(const DoubleVec2d& pValues) override;
+    void compute(const Vec2d<T>& pInputs);
+    void backward(const Vec2d<T>& pValues);
 };
 
 }

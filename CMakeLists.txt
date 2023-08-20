@@ -9,7 +9,6 @@ project(nnfs-project)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
 
 add_executable(nnfs 
-    src/main.cpp 
     src/utils.hpp 
     src/utils.cpp 
     src/Activations.cpp 
@@ -22,4 +21,5 @@ add_executable(nnfs
     src/LossActivation.hpp
     src/Optimizers.cpp
     src/Optimizers.hpp
+    src/main.cpp 
 )

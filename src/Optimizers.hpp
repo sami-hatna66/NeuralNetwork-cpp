@@ -6,54 +6,78 @@
 
 namespace Optimizers {
 
+template <typename T>
 class OptimizerBase {
 protected:
-    double learningRate;
-    double currentLearningRate;
-    double decay;
-    double iterations;
+    T learningRate;
+    T currentLearningRate;
+    T decay;
+    T iterations;
 public: 
-    OptimizerBase(double pLearningRate, double PDecay);
+    OptimizerBase(T pLearningRate, T PDecay);
     void setup();
-    virtual void updateParams(Layer& layer) = 0;
     void finalize();
 
-    double getCurrentLearningRate();
+    T getCurrentLearningRate();
 };
 
-class StochasticGradientDescent : public OptimizerBase {
+template <typename T>
+class StochasticGradientDescent : public OptimizerBase<T> {
 private:
-    double momentum;
+    T momentum;
+
+    using OptimizerBase<T>::learningRate;
+    using OptimizerBase<T>::currentLearningRate;
+    using OptimizerBase<T>::decay;
+    using OptimizerBase<T>::iterations;
 public:
-    StochasticGradientDescent(double pLearningRate = 1.0, double pDecay = 0.0, double pMomentum = 0.0);
-    void updateParams(Layer& layer) override;
+    StochasticGradientDescent(T pLearningRate = 1.0, T pDecay = 0.0, T pMomentum = 0.0);
+    void updateParams(Layer<T>& layer);
 };
 
-class Adagrad : public OptimizerBase {
+template <typename T>
+class Adagrad : public OptimizerBase<T> {
 private:
-    double epsilon;
+    T epsilon;
+
+    using OptimizerBase<T>::learningRate;
+    using OptimizerBase<T>::currentLearningRate;
+    using OptimizerBase<T>::decay;
+    using OptimizerBase<T>::iterations;
 public:
-    Adagrad(double pLearningRate = 1.0, double pDecay = 0.0, double pEpsilon = 0.0000001);
-    void updateParams(Layer& layer) override;
+    Adagrad(T pLearningRate = 1.0, T pDecay = 0.0, T pEpsilon = 0.0000001);
+    void updateParams(Layer<T>& layer);
 };
 
-class RMSprop : public OptimizerBase {
+template <typename T>
+class RMSprop : public OptimizerBase<T> {
 private:
-    double epsilon;
-    double rho;
+    T epsilon;
+    T rho;
+
+    using OptimizerBase<T>::learningRate;
+    using OptimizerBase<T>::currentLearningRate;
+    using OptimizerBase<T>::decay;
+    using OptimizerBase<T>::iterations;
 public:
-    RMSprop(double pLearningRate = 0.001, double pDecay = 0.0, double pEpsilon = 0.0000001, double pRho = 0.9);
-    void updateParams(Layer& layer) override;
+    RMSprop(T pLearningRate = 0.001, T pDecay = 0.0, T pEpsilon = 0.0000001, T pRho = 0.9);
+    void updateParams(Layer<T>& layer);
 };
 
-class Adam : public OptimizerBase {
+template <typename T>
+class Adam : public OptimizerBase<T> {
 private:
-    double epsilon;
-    double beta1;
-    double beta2;
+    T epsilon;
+    T beta1;
+    T beta2;
+
+    using OptimizerBase<T>::learningRate;
+    using OptimizerBase<T>::currentLearningRate;
+    using OptimizerBase<T>::decay;
+    using OptimizerBase<T>::iterations;
 public:
-    Adam(double pLearningRate = 0.001, double pDecay = 0.0, double pEpsilon = 0.0000001, double pBeta1 = 0.9, double pBeta2 = 0.999);
-    void updateParams(Layer& layer) override; 
+    Adam(T pLearningRate = 0.001, T pDecay = 0.0, T pEpsilon = 0.0000001, T pBeta1 = 0.9, T pBeta2 = 0.999);
+    void updateParams(Layer<T>& layer); 
 };
 
 }

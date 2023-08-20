@@ -7,14 +7,15 @@
 
 namespace Loss {
 
+template <typename T>
 class CategoricalCrossEntropy {
 private:
-    DoubleVec2d dInputs;
+    Vec2d<T> dInputs;
 public:
-    double calculate(DoubleVec2d& output, DoubleVec2d& y);
-    std::vector<double> compute(DoubleVec2d& predictY, DoubleVec2d& actualY);
-    void backward(DoubleVec2d& dValues, DoubleVec2d& actualY);
-    DoubleVec2d getDInputs();
+    T calculate(Vec2d<T>& output, Vec2d<T>& y);
+    std::vector<T> compute(Vec2d<T>& predictY, Vec2d<T>& actualY);
+    void backward(Vec2d<T>& dValues, Vec2d<T>& actualY);
+    Vec2d<T> getDInputs();
 };
 
 }
