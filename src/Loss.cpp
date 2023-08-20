@@ -3,15 +3,18 @@
 namespace Loss {
 
 template <typename T>
-T CategoricalCrossEntropy<T>::calculate(Vec2d<T>& output, Vec2d<T>& y) {
+T CategoricalCrossEntropy<T>::calculate(Vec2d<T> &output, Vec2d<T> &y) {
     auto sampleLosses = compute(output, y);
 
-    T dataLoss =  std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0, std::plus<T>()) / sampleLosses.size();
+    T dataLoss = std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0,
+                                 std::plus<T>()) /
+                 sampleLosses.size();
     return dataLoss;
 }
 
 template <typename T>
-std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T>& predictY, Vec2d<T>& actualY) {
+std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T> &predictY,
+                                                   Vec2d<T> &actualY) {
     int numSamples = predictY.size();
 
     // Trim data, prevents zero division
@@ -20,8 +23,10 @@ std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T>& predictY, Vec2d<T>&
 
     for (int i = 0; i < predictY.size(); i++) {
         for (int j = 0; j < predictY[i].size(); j++) {
-            if (predictY[i][j] < lowerLimit) predictY[i][j] = lowerLimit;
-            else if (predictY[i][j] > upperLimit) predictY[i][j] = upperLimit;
+            if (predictY[i][j] < lowerLimit)
+                predictY[i][j] = lowerLimit;
+            else if (predictY[i][j] > upperLimit)
+                predictY[i][j] = upperLimit;
         }
     }
 
@@ -37,7 +42,8 @@ std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T>& predictY, Vec2d<T>&
             }
         }
         for (int i = 0; i < predictY.size(); i++) {
-            pickedConfidences.push_back(std::accumulate(predictY[i].begin(), predictY[i].end(), 0.0, std::plus<T>()));
+            pickedConfidences.push_back(std::accumulate(
+                predictY[i].begin(), predictY[i].end(), 0.0, std::plus<T>()));
         }
     }
 
@@ -48,7 +54,8 @@ std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T>& predictY, Vec2d<T>&
 }
 
 template <typename T>
-void CategoricalCrossEntropy<T>::backward(Vec2d<T>& dValues, Vec2d<T>& actualY) {
+void CategoricalCrossEntropy<T>::backward(Vec2d<T> &dValues,
+                                          Vec2d<T> &actualY) {
     dInputs.clear();
     int numSamples = dValues.size();
     int numLabels = dValues[0].size();
@@ -70,8 +77,7 @@ void CategoricalCrossEntropy<T>::backward(Vec2d<T>& dValues, Vec2d<T>& actualY) 
     }
 }
 
-template <typename T>
-Vec2d<T> CategoricalCrossEntropy<T>::getDInputs() {
+template <typename T> Vec2d<T> CategoricalCrossEntropy<T>::getDInputs() {
     return dInputs;
 }
 
@@ -79,4 +85,4 @@ Vec2d<T> CategoricalCrossEntropy<T>::getDInputs() {
 template class CategoricalCrossEntropy<double>;
 template class CategoricalCrossEntropy<float>;
 
-}
+} // namespace Loss

@@ -1,14 +1,14 @@
-#include <iostream>
-#include <iomanip>
 #include <chrono>
+#include <iomanip>
+#include <iostream>
 #include <vector>
 
-#include "utils.hpp"
-#include "Layer.hpp"
 #include "Activations.hpp"
+#include "Layer.hpp"
 #include "Loss.hpp"
 #include "LossActivation.hpp"
 #include "Optimizers.hpp"
+#include "utils.hpp"
 
 int main() {
     Layer<double> layer1(2, 64, 0);
@@ -23,21 +23,24 @@ int main() {
         layer1.compute(spiralDataX);
         activation1.compute(layer1.getOutput());
         layer2.compute(activation1.getOutput());
-        
+
         auto loss = lossActivation.compute(layer2.getOutput(), spiralDataY);
-        auto accuracy = calculateAccuracy<double>(lossActivation.getOutput(), spiralDataY);
+        auto accuracy =
+            calculateAccuracy<double>(lossActivation.getOutput(), spiralDataY);
 
         if (i % 100 == 0) {
-            std::cout << "epoch: " << i
-                    << std::fixed << std::setprecision(3)
-                    << ", accuracy: " << accuracy
-                    << std::fixed << std::setprecision(15)
-                    << ", loss: " << loss
-                    << std::fixed << std::setprecision(3)
-                    << ", lr: " << optimizer.getCurrentLearningRate()
-                    << ", time: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - startTime).count() << " ms"
-                    << std::endl;
-            auto startTime = std::chrono::high_resolution_clock::now(); 
+            std::cout << "epoch: " << i << std::fixed << std::setprecision(3)
+                      << ", accuracy: " << accuracy << std::fixed
+                      << std::setprecision(15) << ", loss: " << loss
+                      << std::fixed << std::setprecision(3)
+                      << ", lr: " << optimizer.getCurrentLearningRate()
+                      << ", time: "
+                      << std::chrono::duration_cast<std::chrono::milliseconds>(
+                             std::chrono::high_resolution_clock::now() -
+                             startTime)
+                             .count()
+                      << " ms" << std::endl;
+            auto startTime = std::chrono::high_resolution_clock::now();
         }
 
         lossActivation.backward(lossActivation.getOutput(), spiralDataY);

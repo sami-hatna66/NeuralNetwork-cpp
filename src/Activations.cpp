@@ -2,32 +2,27 @@
 
 namespace Activations {
 
-template <typename T>
-Vec2d<T>& ActivationBase<T>::getOutput() {
+template <typename T> Vec2d<T> &ActivationBase<T>::getOutput() {
     return output;
 }
 
-template <typename T>
-Vec2d<T>& ActivationBase<T>::getDInputs() {
+template <typename T> Vec2d<T> &ActivationBase<T>::getDInputs() {
     return dInputs;
 }
 
-
-template <typename T>
-void Relu<T>::compute(const Vec2d<T>& pInputs) {
+template <typename T> void Relu<T>::compute(const Vec2d<T> &pInputs) {
     inputs = pInputs;
     if (output.size() == 0) {
         output = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size(), 0.0));
     }
     for (int i = 0; i < inputs.size(); i++) {
         for (int j = 0; j < inputs[i].size(); j++) {
-            output[i][j] = std::max((T) 0.0, inputs[i][j]);
+            output[i][j] = std::max((T)0.0, inputs[i][j]);
         }
     }
 }
 
-template <typename T>
-void Relu<T>::backward(const Vec2d<T>& pValues) {
+template <typename T> void Relu<T>::backward(const Vec2d<T> &pValues) {
     dInputs = pValues;
     for (int i = 0; i < dInputs.size(); i++) {
         for (int j = 0; j < dInputs[i].size(); j++) {
@@ -36,11 +31,11 @@ void Relu<T>::backward(const Vec2d<T>& pValues) {
     }
 }
 
-template <typename T>
-void Softmax<T>::compute(const Vec2d<T>& pInputs) {
+template <typename T> void Softmax<T>::compute(const Vec2d<T> &pInputs) {
     inputs = pInputs;
 
-    Vec2d<T> expValues = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size(), 0.0));
+    Vec2d<T> expValues =
+        Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size(), 0.0));
     for (int i = 0; i < inputs.size(); i++) {
         T rowMax = *std::max_element(inputs[i].begin(), inputs[i].end());
         for (int j = 0; j < inputs[i].size(); j++) {
@@ -49,18 +44,19 @@ void Softmax<T>::compute(const Vec2d<T>& pInputs) {
     }
 
     if (output.size() == 0) {
-        output = Vec2d<T>(expValues.size(), std::vector<T>(expValues[0].size(), 0.0));
+        output = Vec2d<T>(expValues.size(),
+                          std::vector<T>(expValues[0].size(), 0.0));
     }
     for (int i = 0; i < expValues.size(); i++) {
-        T rowSum = std::accumulate(expValues[i].begin(), expValues[i].end(), 0.0, std::plus<T>());
+        T rowSum = std::accumulate(expValues[i].begin(), expValues[i].end(),
+                                   0.0, std::plus<T>());
         for (int j = 0; j < expValues[i].size(); j++) {
             output[i][j] = expValues[i][j] / rowSum;
         }
     }
 }
 
-template <typename T>
-void Softmax<T>::backward(const Vec2d<T>& pValues) {
+template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
     dInputs = Vec2d<T>(pValues.size(), std::vector<T>(pValues[0].size(), 0.0));
 
     Vec2d<T> diagFlat(output[0].size(), std::vector<T>(output[0].size(), 0.0));
@@ -74,12 +70,15 @@ void Softmax<T>::backward(const Vec2d<T>& pValues) {
 
         for (int j = 0; j < reshapedSingleOutput.size(); j++) {
             for (int k = 0; k < reshapedSingleOutput.size(); k++) {
-                if (j == k) diagFlat[j][k] = reshapedSingleOutput[j][0];
-                else diagFlat[j][k] = 0.0;
+                if (j == k)
+                    diagFlat[j][k] = reshapedSingleOutput[j][0];
+                else
+                    diagFlat[j][k] = 0.0;
             }
         }
 
-        Vec2d<T> dotSingleOutput = reshapedSingleOutput * transpose(reshapedSingleOutput);
+        Vec2d<T> dotSingleOutput =
+            reshapedSingleOutput * transpose(reshapedSingleOutput);
 
         Vec2d<T> jacobian = diagFlat - dotSingleOutput;
 
@@ -101,4 +100,4 @@ template class Relu<float>;
 template class Softmax<double>;
 template class Softmax<float>;
 
-}
+} // namespace Activations
