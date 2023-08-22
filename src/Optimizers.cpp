@@ -25,7 +25,7 @@ StochasticGradientDescent<T>::StochasticGradientDescent(T pLearningRate,
     : momentum{pMomentum}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
 template <typename T>
-void StochasticGradientDescent<T>::updateParams(Layer<T> &layer) {
+void StochasticGradientDescent<T>::updateParams(Layers::DenseLayer<T> &layer) {
     Vec2d<T> weightUpdates;
     Vec2d<T> biasUpdates;
     if (momentum != 0) {
@@ -48,7 +48,7 @@ template <typename T>
 Adagrad<T>::Adagrad(T pLearningRate, T pDecay, T pEpsilon)
     : epsilon{pEpsilon}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
-template <typename T> void Adagrad<T>::updateParams(Layer<T> &layer) {
+template <typename T> void Adagrad<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache(layer.getWeightCache() +
                          power<T>(layer.getDWeights(), 2.0));
     layer.setBiasCache(layer.getBiasCache() +
@@ -66,7 +66,7 @@ template <typename T>
 RMSprop<T>::RMSprop(T pLearningRate, T pDecay, T pEpsilon, T pRho)
     : epsilon{pEpsilon}, rho{pRho}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
-template <typename T> void RMSprop<T>::updateParams(Layer<T> &layer) {
+template <typename T> void RMSprop<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache((rho * layer.getWeightCache()) +
                          ((1 - rho) * power<T>(layer.getDWeights(), 2.0)));
     layer.setBiasCache((rho * layer.getBiasCache()) +
@@ -86,7 +86,7 @@ Adam<T>::Adam(T pLearningRate, T pDecay, T pEpsilon, T pBeta1, T pBeta2)
                                                            pLearningRate,
                                                            pDecay} {}
 
-template <typename T> void Adam<T>::updateParams(Layer<T> &layer) {
+template <typename T> void Adam<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightMomentums(beta1 * layer.getWeightMomentums() +
                              (1 - beta1) * layer.getDWeights());
     layer.setBiasMomentums(beta1 * layer.getBiasMomentums() +

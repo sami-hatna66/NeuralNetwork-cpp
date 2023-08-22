@@ -2,6 +2,7 @@
 #define LossActivation_hpp
 
 #include "Activations.hpp"
+#include "Layer.cpp"
 #include "Loss.hpp"
 
 namespace LossActivation {
@@ -16,6 +17,7 @@ template <typename T> class SoftmaxCCE {
   public:
     SoftmaxCCE();
     T compute(Vec2d<T> inputs, Vec2d<T> actualY);
+    T calculateRegLoss(Layers::DenseLayer<T> &layer);
     void backward(Vec2d<T> dValues, Vec2d<T> actualY);
     Vec2d<T> &getOutput();
     Vec2d<T> &getDInputs();

@@ -34,7 +34,7 @@ class StochasticGradientDescent : public OptimizerBase<T> {
   public:
     StochasticGradientDescent(T pLearningRate = 1.0, T pDecay = 0.0,
                               T pMomentum = 0.0);
-    void updateParams(Layer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer);
 };
 
 template <typename T> class Adagrad : public OptimizerBase<T> {
@@ -48,7 +48,7 @@ template <typename T> class Adagrad : public OptimizerBase<T> {
 
   public:
     Adagrad(T pLearningRate = 1.0, T pDecay = 0.0, T pEpsilon = 0.0000001);
-    void updateParams(Layer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer);
 };
 
 template <typename T> class RMSprop : public OptimizerBase<T> {
@@ -64,7 +64,7 @@ template <typename T> class RMSprop : public OptimizerBase<T> {
   public:
     RMSprop(T pLearningRate = 0.001, T pDecay = 0.0, T pEpsilon = 0.0000001,
             T pRho = 0.9);
-    void updateParams(Layer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer);
 };
 
 template <typename T> class Adam : public OptimizerBase<T> {
@@ -81,7 +81,7 @@ template <typename T> class Adam : public OptimizerBase<T> {
   public:
     Adam(T pLearningRate = 0.001, T pDecay = 0.0, T pEpsilon = 0.0000001,
          T pBeta1 = 0.9, T pBeta2 = 0.999);
-    void updateParams(Layer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer);
 };
 
 } // namespace Optimizers
