@@ -58,6 +58,18 @@ template <typename T> class Sigmoid : public ActivationBase<T> {
     void backward(const Vec2d<T> &pValues) override;
 };
 
+template <typename T> class Linear : public ActivationBase<T> {
+  private:
+    using ActivationBase<T>::inputs;
+    using ActivationBase<T>::output;
+    using ActivationBase<T>::dInputs;
+
+  public:
+    Linear() {}
+    void compute(const Vec2d<T> &pInputs) override;
+    void backward(const Vec2d<T> &pValues) override;
+};
+
 } // namespace Activations
 
 #endif
