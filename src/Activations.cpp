@@ -92,6 +92,16 @@ template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
     }
 }
 
+template <typename T> void Sigmoid<T>::compute(const Vec2d<T> &pInputs) {
+    inputs = pInputs;
+    output = (T)1.0 / (exp((T)0.0 - inputs) + (T)1.0);
+}
+
+template <typename T> void Sigmoid<T>::backward(const Vec2d<T> &pValues) {
+    auto adjustedOutput = (T)1.0 - output;
+    dInputs = eltwiseMult(pValues, eltwiseMult(adjustedOutput, output));
+}
+
 // Explicit instantiations
 template class ActivationBase<double>;
 template class ActivationBase<float>;
@@ -99,5 +109,7 @@ template class Relu<double>;
 template class Relu<float>;
 template class Softmax<double>;
 template class Softmax<float>;
+template class Sigmoid<double>;
+template class Sigmoid<float>;
 
 } // namespace Activations

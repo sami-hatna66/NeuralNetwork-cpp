@@ -48,7 +48,8 @@ template <typename T>
 Adagrad<T>::Adagrad(T pLearningRate, T pDecay, T pEpsilon)
     : epsilon{pEpsilon}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
-template <typename T> void Adagrad<T>::updateParams(Layers::DenseLayer<T> &layer) {
+template <typename T>
+void Adagrad<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache(layer.getWeightCache() +
                          power<T>(layer.getDWeights(), 2.0));
     layer.setBiasCache(layer.getBiasCache() +
@@ -66,7 +67,8 @@ template <typename T>
 RMSprop<T>::RMSprop(T pLearningRate, T pDecay, T pEpsilon, T pRho)
     : epsilon{pEpsilon}, rho{pRho}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
-template <typename T> void RMSprop<T>::updateParams(Layers::DenseLayer<T> &layer) {
+template <typename T>
+void RMSprop<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache((rho * layer.getWeightCache()) +
                          ((1 - rho) * power<T>(layer.getDWeights(), 2.0)));
     layer.setBiasCache((rho * layer.getBiasCache()) +

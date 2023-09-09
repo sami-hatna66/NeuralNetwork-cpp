@@ -17,8 +17,9 @@ template <typename T> class OptimizerBase {
     OptimizerBase(T pLearningRate, T PDecay);
     void setup();
     void finalize();
-
     T getCurrentLearningRate();
+
+    virtual void updateParams(Layers::DenseLayer<T> &layer) = 0;
 };
 
 template <typename T>
@@ -34,7 +35,7 @@ class StochasticGradientDescent : public OptimizerBase<T> {
   public:
     StochasticGradientDescent(T pLearningRate = 1.0, T pDecay = 0.0,
                               T pMomentum = 0.0);
-    void updateParams(Layers::DenseLayer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer) override;
 };
 
 template <typename T> class Adagrad : public OptimizerBase<T> {
@@ -48,7 +49,7 @@ template <typename T> class Adagrad : public OptimizerBase<T> {
 
   public:
     Adagrad(T pLearningRate = 1.0, T pDecay = 0.0, T pEpsilon = 0.0000001);
-    void updateParams(Layers::DenseLayer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer) override;
 };
 
 template <typename T> class RMSprop : public OptimizerBase<T> {
@@ -64,7 +65,7 @@ template <typename T> class RMSprop : public OptimizerBase<T> {
   public:
     RMSprop(T pLearningRate = 0.001, T pDecay = 0.0, T pEpsilon = 0.0000001,
             T pRho = 0.9);
-    void updateParams(Layers::DenseLayer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer) override;
 };
 
 template <typename T> class Adam : public OptimizerBase<T> {
@@ -81,7 +82,7 @@ template <typename T> class Adam : public OptimizerBase<T> {
   public:
     Adam(T pLearningRate = 0.001, T pDecay = 0.0, T pEpsilon = 0.0000001,
          T pBeta1 = 0.9, T pBeta2 = 0.999);
-    void updateParams(Layers::DenseLayer<T> &layer);
+    void updateParams(Layers::DenseLayer<T> &layer) override;
 };
 
 } // namespace Optimizers

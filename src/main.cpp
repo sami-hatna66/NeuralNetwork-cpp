@@ -11,32 +11,31 @@
 #include "utils.hpp"
 
 int main() {
-    Layers::DenseLayer<double> layer1(2, 64, 0, 0, 0.0005, 0, 0.0005);
+    Layers::DenseLayer<double> layer1(2, 64, 0, 0.0005, 0, 0.0005);
     Activations::Relu<double> activation1;
-    Layers::DropoutLayer<double> dropout1(0.1);
-    Layers::DenseLayer<double> layer2(64, 3, 1);
-    LossActivation::SoftmaxCCE<double> lossActivation;
-    auto optimizer = Optimizers::Adam<double>(0.05, 0.00005);
+    Layers::DenseLayer<double> layer2(64, 1);
+    Activations::Sigmoid<double> activation2;
+    Loss::BinaryCrossEntropy<double> loss;
+    auto optimizer = Optimizers::Adam<double>(0.001, 0.0000005);
 
     auto startTime = std::chrono::high_resolution_clock::now();
-
     for (int i = 0; i < 1000; i++) {
         layer1.compute(spiralDataX);
         activation1.compute(layer1.getOutput());
-        dropout1.compute(activation1.getOutput());
-        layer2.compute(dropout1.getOutput());
+        layer2.compute(activation1.getOutput());
+        activation2.compute(layer2.getOutput());
 
-        auto dataLoss = lossActivation.compute(layer2.getOutput(), spiralDataY);
-        auto regLoss = lossActivation.calculateRegLoss(layer1) +
-                       lossActivation.calculateRegLoss(layer2);
-        auto loss = dataLoss + regLoss;
+        auto dataLoss = loss.calculate(activation2.getOutput(), spiralDataY);
+        auto regLoss =
+            loss.calculateRegLoss(layer1) + loss.calculateRegLoss(layer2);
+        auto lossVal = dataLoss + regLoss;
         auto accuracy =
-            calculateAccuracy<double>(lossActivation.getOutput(), spiralDataY);
+            calculateAccuracy<double>(activation2.getOutput(), spiralDataY);
 
         if (i % 100 == 0) {
             std::cout << "epoch: " << i << std::fixed << std::setprecision(3)
                       << ", accuracy: " << accuracy << std::fixed << std::fixed
-                      << std::setprecision(3) << ", loss: " << loss
+                      << std::setprecision(3) << ", loss: " << lossVal
                       << " (data loss: " << dataLoss
                       << ", reg loss: " << regLoss << ")" << std::fixed
                       << std::setprecision(3)
@@ -50,10 +49,10 @@ int main() {
             auto startTime = std::chrono::high_resolution_clock::now();
         }
 
-        lossActivation.backward(lossActivation.getOutput(), spiralDataY);
-        layer2.backward(lossActivation.getDInputs());
-        dropout1.backward(layer2.getDInputs());
-        activation1.backward(dropout1.getDInputs());
+        loss.backward(activation2.getOutput(), spiralDataY);
+        activation2.backward(loss.getDInputs());
+        layer2.backward(activation2.getDInputs());
+        activation1.backward(layer2.getDInputs());
         layer1.backward(activation1.getDInputs());
 
         optimizer.setup();

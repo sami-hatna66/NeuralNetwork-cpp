@@ -30,12 +30,13 @@ template <typename T> class DenseLayer {
     T biasRegularizerL2;
 
   public:
-    DenseLayer(int numInputs, int numNeurons, int num, T pWeightRegularizerL1 = 0,
-          T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
-          T pBiasRegularizerL2 = 0);
+    // DenseLayer(int numInputs, int numNeurons, int num, T pWeightRegularizerL1
+    // = 0,
+    //       T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
+    //       T pBiasRegularizerL2 = 0);
     DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1 = 0,
-          T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
-          T pBiasRegularizerL2 = 0);
+               T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
+               T pBiasRegularizerL2 = 0);
     void compute(const Vec2d<T> &pInputs);
     void backward(const Vec2d<T> &dValues);
 
@@ -62,8 +63,7 @@ template <typename T> class DenseLayer {
     void setBiases(const Vec2d<T> &newBiases);
 };
 
-template <typename T> 
-class DropoutLayer {
+template <typename T> class DropoutLayer {
   private:
     Vec2d<T> inputs;
     Vec2d<T> output;
@@ -80,6 +80,6 @@ class DropoutLayer {
     Vec2d<T> getDInputs();
 };
 
-}
+} // namespace Layers
 
 #endif

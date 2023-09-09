@@ -2,15 +2,62 @@
 
 namespace Loss {
 
-template <typename T>
-T CategoricalCrossEntropy<T>::calculate(Vec2d<T> &output, Vec2d<T> &y) {
+template <typename T> T LossBase<T>::calculate(Vec2d<T> &output, Vec2d<T> &y) {
     auto sampleLosses = compute(output, y);
-
     T dataLoss = std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0,
                                  std::plus<T>()) /
                  sampleLosses.size();
     return dataLoss;
 }
+
+template <typename T>
+T LossBase<T>::calculateRegLoss(Layers::DenseLayer<T> &layer) {
+    T regularizationLoss = 0.0;
+
+    if (layer.getWeightRegularizerL1() > 0) {
+        T weightSum = 0.0;
+        for (int i = 0; i < layer.getWeights().size(); i++) {
+            for (int j = 0; j < layer.getWeights()[i].size(); j++) {
+                weightSum += std::abs(layer.getWeights()[i][j]);
+            }
+        }
+        regularizationLoss += layer.getWeightRegularizerL1() * weightSum;
+    }
+    if (layer.getWeightRegularizerL2() > 0) {
+        auto weightsSquared = power(layer.getWeights(), (T)2.0);
+        T weightsSquaredSum = 0.0;
+        for (int i = 0; i < weightsSquared.size(); i++) {
+            for (int j = 0; j < weightsSquared[i].size(); j++) {
+                weightsSquaredSum += weightsSquared[i][j];
+            }
+        }
+        regularizationLoss +=
+            layer.getWeightRegularizerL2() * weightsSquaredSum;
+    }
+    if (layer.getBiasRegularizerL1() > 0) {
+        T biasSum = 0.0;
+        for (int i = 0; i < layer.getBiases().size(); i++) {
+            for (int j = 0; j < layer.getBiases()[i].size(); j++) {
+                biasSum += std::abs(layer.getBiases()[i][j]);
+            }
+        }
+        regularizationLoss += layer.getBiasRegularizerL1() * biasSum;
+    }
+    if (layer.getBiasRegularizerL2() > 0) {
+        auto biasesSquared = power(layer.getBiases(), (T)2.0);
+        T biasesSquaredSum = 0.0;
+        for (int i = 0; i < biasesSquared.size(); i++) {
+            for (int j = 0; j < biasesSquared[i].size(); j++) {
+                biasesSquaredSum += biasesSquared[i][j];
+            }
+        }
+        regularizationLoss += layer.getBiasRegularizerL2() * biasesSquaredSum;
+    }
+
+    return regularizationLoss;
+}
+
+template <typename T> Vec2d<T> LossBase<T>::getDInputs() { return dInputs; }
 
 template <typename T>
 std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T> &predictY,
@@ -48,6 +95,7 @@ std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T> &predictY,
     }
 
     for (int i = 0; i < pickedConfidences.size(); i++) {
+        assert(pickedConfidences[i] != (T)0);
         pickedConfidences[i] = -std::log(pickedConfidences[i]);
     }
     return pickedConfidences;
@@ -77,12 +125,66 @@ void CategoricalCrossEntropy<T>::backward(Vec2d<T> &dValues,
     }
 }
 
-template <typename T> Vec2d<T> CategoricalCrossEntropy<T>::getDInputs() {
-    return dInputs;
+template <typename T>
+std::vector<T> BinaryCrossEntropy<T>::compute(Vec2d<T> &predictY,
+                                              Vec2d<T> &actualY) {
+    // Trim data, prevents zero division
+    T lowerLimit = 0.0000001;
+    T upperLimit = 0.9999999;
+    for (int i = 0; i < predictY.size(); i++) {
+        for (int j = 0; j < predictY[i].size(); j++) {
+            if (predictY[i][j] < lowerLimit)
+                predictY[i][j] = lowerLimit;
+            else if (predictY[i][j] > upperLimit)
+                predictY[i][j] = upperLimit;
+        }
+    }
+
+    Vec2d<T> sampleLosses =
+        (T)0.0 - (eltwiseMult(actualY, log(predictY)) +
+                  eltwiseMult(((T)1.0 - actualY), log((T)1.0 - predictY)));
+
+    std::vector<T> result(sampleLosses.size());
+    for (int i = 0; i < sampleLosses.size(); i++) {
+        T sum = 0.0;
+        for (int j = 0; j < sampleLosses[i].size(); j++) {
+            sum += sampleLosses[i][j];
+        }
+        result[i] = sum / sampleLosses[i].size();
+    }
+    return result;
+}
+
+template <typename T>
+void BinaryCrossEntropy<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
+    T numSamples = dValues.size();
+    T numLabels = dValues[0].size();
+
+    // Trim data, prevents zero division
+    T lowerLimit = 0.0000001;
+    T upperLimit = 0.9999999;
+
+    for (int i = 0; i < dValues.size(); i++) {
+        for (int j = 0; j < dValues[i].size(); j++) {
+            if (dValues[i][j] < lowerLimit)
+                dValues[i][j] = lowerLimit;
+            else if (dValues[i][j] > upperLimit)
+                dValues[i][j] = upperLimit;
+        }
+    }
+
+    dInputs =
+        (T)0.0 - (actualY / dValues - ((T)1.0 - actualY) / ((T)1.0 - dValues)) /
+                     numLabels;
+    dInputs = dInputs / numSamples;
 }
 
 // Explicit instantiations
+template class LossBase<double>;
+template class LossBase<float>;
 template class CategoricalCrossEntropy<double>;
 template class CategoricalCrossEntropy<float>;
+template class BinaryCrossEntropy<double>;
+template class BinaryCrossEntropy<float>;
 
 } // namespace Loss

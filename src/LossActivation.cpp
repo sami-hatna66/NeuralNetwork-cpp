@@ -11,52 +11,6 @@ T SoftmaxCCE<T>::compute(Vec2d<T> inputs, Vec2d<T> actualY) {
     return loss.calculate(output, actualY);
 }
 
-template <typename T> T SoftmaxCCE<T>::calculateRegLoss(Layers::DenseLayer<T> &layer) {
-    T regularizationLoss = 0.0;
-
-    if (layer.getWeightRegularizerL1() > 0) {
-        T weightSum = 0.0;
-        for (int i = 0; i < layer.getWeights().size(); i++) {
-            for (int j = 0; j < layer.getWeights()[i].size(); j++) {
-                weightSum += std::abs(layer.getWeights()[i][j]);
-            }
-        }
-        regularizationLoss += layer.getWeightRegularizerL1() * weightSum;
-    }
-    if (layer.getWeightRegularizerL2() > 0) {
-        auto weightsSquared = power(layer.getWeights(), (T)2.0);
-        T weightsSquaredSum = 0.0;
-        for (int i = 0; i < weightsSquared.size(); i++) {
-            for (int j = 0; j < weightsSquared[i].size(); j++) {
-                weightsSquaredSum += weightsSquared[i][j];
-            }
-        }
-        regularizationLoss +=
-            layer.getWeightRegularizerL2() * weightsSquaredSum;
-    }
-    if (layer.getBiasRegularizerL1() > 0) {
-        T biasSum = 0.0;
-        for (int i = 0; i < layer.getBiases().size(); i++) {
-            for (int j = 0; j < layer.getBiases()[i].size(); j++) {
-                biasSum += std::abs(layer.getBiases()[i][j]);
-            }
-        }
-        regularizationLoss += layer.getBiasRegularizerL1() * biasSum;
-    }
-    if (layer.getBiasRegularizerL2() > 0) {
-        auto biasesSquared = power(layer.getBiases(), (T)2.0);
-        T biasesSquaredSum = 0.0;
-        for (int i = 0; i < biasesSquared.size(); i++) {
-            for (int j = 0; j < biasesSquared[i].size(); j++) {
-                biasesSquaredSum += biasesSquared[i][j];
-            }
-        }
-        regularizationLoss += layer.getBiasRegularizerL2() * biasesSquaredSum;
-    }
-
-    return regularizationLoss;
-}
-
 template <typename T>
 void SoftmaxCCE<T>::backward(Vec2d<T> dValues, Vec2d<T> actualY) {
     int numSamples = dValues.size();

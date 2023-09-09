@@ -17,6 +17,9 @@ template <typename T> class ActivationBase {
     ActivationBase() {}
     Vec2d<T> &getOutput();
     Vec2d<T> &getDInputs();
+
+    virtual void compute(const Vec2d<T> &pInputs) = 0;
+    virtual void backward(const Vec2d<T> &pValues) = 0;
 };
 
 template <typename T> class Relu : public ActivationBase<T> {
@@ -27,8 +30,8 @@ template <typename T> class Relu : public ActivationBase<T> {
 
   public:
     Relu() {}
-    void compute(const Vec2d<T> &pInputs);
-    void backward(const Vec2d<T> &pValues);
+    void compute(const Vec2d<T> &pInputs) override;
+    void backward(const Vec2d<T> &pValues) override;
 };
 
 template <typename T> class Softmax : public ActivationBase<T> {
@@ -39,8 +42,20 @@ template <typename T> class Softmax : public ActivationBase<T> {
 
   public:
     Softmax() {}
-    void compute(const Vec2d<T> &pInputs);
-    void backward(const Vec2d<T> &pValues);
+    void compute(const Vec2d<T> &pInputs) override;
+    void backward(const Vec2d<T> &pValues) override;
+};
+
+template <typename T> class Sigmoid : public ActivationBase<T> {
+  private:
+    using ActivationBase<T>::inputs;
+    using ActivationBase<T>::output;
+    using ActivationBase<T>::dInputs;
+
+  public:
+    Sigmoid() {}
+    void compute(const Vec2d<T> &pInputs) override;
+    void backward(const Vec2d<T> &pValues) override;
 };
 
 } // namespace Activations
