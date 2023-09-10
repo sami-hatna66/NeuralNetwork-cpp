@@ -40,6 +40,24 @@ template <typename T> class BinaryCrossEntropy : public LossBase<T> {
     void backward(Vec2d<T> &dValues, Vec2d<T> &actualY) override;
 };
 
+template <typename T> class MeanSquaredError : public LossBase<T> {
+  private:
+    using LossBase<T>::dInputs;
+
+  public:
+    std::vector<T> compute(Vec2d<T> &predictY, Vec2d<T> &actualY) override;
+    void backward(Vec2d<T> &dValues, Vec2d<T> &actualY) override;
+};
+
+template <typename T> class MeanAbsoluteError : public LossBase<T> {
+  private:
+    using LossBase<T>::dInputs;
+
+  public:
+    std::vector<T> compute(Vec2d<T> &predictY, Vec2d<T> &actualY) override;
+    void backward(Vec2d<T> &dValues, Vec2d<T> &actualY) override;
+};
+
 } // namespace Loss
 
 #endif

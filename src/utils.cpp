@@ -152,6 +152,16 @@ template <typename T> Vec2d<T> log(const Vec2d<T> &mat) {
     return result;
 }
 
+template <typename T> Vec2d<T> abs(const Vec2d<T> &mat) {
+    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    for (int i = 0; i < mat.size(); i++) {
+        for (int j = 0; j < mat[i].size(); j++) {
+            result[i][j] = std::abs(mat[i][j]);
+        }
+    }
+    return result;
+}
+
 template <typename T> Vec2d<T> transpose(const Vec2d<T> &mat) {
     Vec2d<T> result(mat[0].size(), std::vector<T>(mat.size(), 0.0));
     for (int i = 0; i < mat[0].size(); i++) {
@@ -176,6 +186,19 @@ Vec2d<T> eltwiseMult(const Vec2d<T> &a, const Vec2d<T> &b) {
 
 template <typename T>
 T calculateAccuracy(const Vec2d<T> &output, const Vec2d<T> &actualY) {
+    T precision = 0.0028284271247461905;
+
+    auto absMinus = abs(output - actualY);
+    T count = 0.0;
+    for (int i = 0; i < absMinus.size(); i++) {
+        for (int j = 0; j < absMinus[i].size(); j++) {
+            if (absMinus[i][j] < precision)
+                count += 1.0;
+        }
+    }
+
+    return count / (absMinus.size() * absMinus[0].size());
+
     // auto argmax = [](const Vec2d<T> &inp) {
     //     std::vector<T> out(inp.size());
     //     for (int i = 0; i < inp.size(); i++) {
@@ -204,14 +227,14 @@ T calculateAccuracy(const Vec2d<T> &output, const Vec2d<T> &actualY) {
 
     // predictions = (activation2.output > 0.5) * 1
     // accuracy = np.mean(predictions==y)
-
-    T sum = 0.0;
-    for (int i = 0; i < output.size(); i++) {
-        for (int j = 0; j < output[i].size(); j++) {
-            sum += ((T)output[i][j] > 0.5) == actualY[i][j];
-        }
-    }
-    return sum / (T)(output.size() * output[0].size());
+    // ---------------------------------------------------------------------------
+    // T sum = 0.0;
+    // for (int i = 0; i < output.size(); i++) {
+    //     for (int j = 0; j < output[i].size(); j++) {
+    //         sum += ((T)output[i][j] > 0.5) == actualY[i][j];
+    //     }
+    // }
+    // return sum / (T)(output.size() * output[0].size());
 }
 
 // Explicit instantiations
@@ -263,6 +286,9 @@ template Vec2d<float> exp(const Vec2d<float> &mat);
 
 template Vec2d<double> log(const Vec2d<double> &mat);
 template Vec2d<float> log(const Vec2d<float> &mat);
+
+template Vec2d<double> abs(const Vec2d<double> &mat);
+template Vec2d<float> abs(const Vec2d<float> &mat);
 
 template Vec2d<double> transpose(const Vec2d<double> &mat);
 template Vec2d<float> transpose(const Vec2d<float> &mat);

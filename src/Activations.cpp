@@ -108,7 +108,6 @@ template <typename T> void Linear<T>::compute(const Vec2d<T> &pInputs) {
 }
 
 template <typename T> void Linear<T>::backward(const Vec2d<T> &pValues) {
-    // dInputs = Vec2d<T>(pValues)
     dInputs = pValues;
 }
 

@@ -4,6 +4,7 @@ namespace Loss {
 
 template <typename T> T LossBase<T>::calculate(Vec2d<T> &output, Vec2d<T> &y) {
     auto sampleLosses = compute(output, y);
+
     T dataLoss = std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0,
                                  std::plus<T>()) /
                  sampleLosses.size();
@@ -179,6 +180,62 @@ void BinaryCrossEntropy<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
     dInputs = dInputs / numSamples;
 }
 
+template <typename T>
+std::vector<T> MeanSquaredError<T>::compute(Vec2d<T> &predictY,
+                                            Vec2d<T> &actualY) {
+    auto yAdjusted = power(actualY - predictY, (T)2.0);
+
+    std::vector<T> result(yAdjusted.size());
+    for (int i = 0; i < yAdjusted.size(); i++) {
+        T sum = 0.0;
+        for (int j = 0; j < yAdjusted[i].size(); j++) {
+            sum += yAdjusted[i][j];
+        }
+        result[i] = sum / yAdjusted[i].size();
+    }
+    return result;
+}
+
+template <typename T>
+void MeanSquaredError<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
+    T numSamples = dValues.size();
+    T numLabels = dValues[0].size();
+
+    dInputs = (((actualY - dValues) * (T)-2.0) / numLabels) / numSamples;
+}
+
+template <typename T>
+std::vector<T> MeanAbsoluteError<T>::compute(Vec2d<T> &predictY,
+                                             Vec2d<T> &actualY) {
+    auto yAdjusted = abs(actualY - predictY);
+
+    std::vector<T> result(yAdjusted.size());
+    for (int i = 0; i < yAdjusted.size(); i++) {
+        T sum = 0.0;
+        for (int j = 0; j < yAdjusted[i].size(); j++) {
+            sum += yAdjusted[i][j];
+        }
+        result[i] = sum / yAdjusted[i].size();
+    }
+    return result;
+}
+
+template <typename T>
+void MeanAbsoluteError<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
+    T numSamples = dValues.size();
+    T numLabels = dValues[0].size();
+
+    Vec2d<T> signs(dValues.size(), std::vector<T>(dValues[0].size()));
+    auto yAdjusted = actualY - dValues;
+    for (int i = 0; i < signs.size(); i++) {
+        for (int j = 0; j < signs[i].size(); j++) {
+            signs[i][j] =
+                yAdjusted[i][j] / std::sqrt(yAdjusted[i][j] * yAdjusted[i][j]);
+        }
+    }
+    dInputs = (signs / numLabels) / numSamples;
+}
+
 // Explicit instantiations
 template class LossBase<double>;
 template class LossBase<float>;
@@ -186,5 +243,9 @@ template class CategoricalCrossEntropy<double>;
 template class CategoricalCrossEntropy<float>;
 template class BinaryCrossEntropy<double>;
 template class BinaryCrossEntropy<float>;
+template class MeanSquaredError<double>;
+template class MeanSquaredError<float>;
+template class MeanAbsoluteError<double>;
+template class MeanAbsoluteError<float>;
 
 } // namespace Loss

@@ -30,10 +30,9 @@ template <typename T> class DenseLayer {
     T biasRegularizerL2;
 
   public:
-    // DenseLayer(int numInputs, int numNeurons, int num, T pWeightRegularizerL1
-    // = 0,
-    //       T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
-    //       T pBiasRegularizerL2 = 0);
+    DenseLayer(int num, int numInputs, int numNeurons,
+               T pWeightRegularizerL1 = 0, T pWeightRegularizerL2 = 0,
+               T pBiasRegularizerL1 = 0, T pBiasRegularizerL2 = 0);
     DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1 = 0,
                T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
                T pBiasRegularizerL2 = 0);
