@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+#include <thread>
 #include <vector>
 
 template <typename T>

@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+const int NUMTHREADS = std::thread::hardware_concurrency();
+
 template <typename T> Vec2d<T> operator*(const T num, const Vec2d<T> &mat) {
     Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
     for (int i = 0; i < mat.size(); i++) {
@@ -14,16 +16,41 @@ template <typename T> Vec2d<T> operator*(const Vec2d<T> &mat, const T num) {
     return num * mat;
 }
 
-template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
-    assert(a[0].size() == b.size());
-    Vec2d<T> result(a.size(), std::vector<T>(b[0].size(), 0.0));
-    for (int i = 0; i < a.size(); i++) {
-        for (int j = 0; j < b[0].size(); j++) {
-            for (int p = 0; p < b.size(); p++) {
-                result[i][j] += a[i][p] * b[p][j];
+template <typename T>
+void multiplyKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
+                    const int startRow, const int endRow) {
+    const int colsA = a[0].size();
+    const int colsB = b[0].size();
+    for (int i = startRow; i < endRow; ++i) {
+        for (int j = 0; j < colsB; ++j) {
+            for (int k = 0; k < colsA; ++k) {
+                result[i][j] += a[i][k] * b[k][j];
             }
         }
     }
+}
+
+template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
+    assert(a[0].size() == b.size());
+    Vec2d<T> result(a.size(), std::vector<T>(b[0].size(), 0.0));
+
+    int rowsPerThread = (a.size() + NUMTHREADS - 1) / NUMTHREADS;
+
+    std::vector<std::thread> threads;
+    threads.reserve(NUMTHREADS);
+
+    for (int i = 0; i < NUMTHREADS; i++) {
+        const int startRow = i * rowsPerThread;
+        const int endRow = std::min((i + 1) * rowsPerThread, (int)a.size());
+        threads.push_back(std::thread(multiplyKernel<T>, std::cref(a),
+                                      std::cref(b), std::ref(result), startRow,
+                                      endRow));
+    }
+
+    for (int i = 0; i < NUMTHREADS; i++) {
+        threads[i].join();
+    }
+
     return result;
 }
 
