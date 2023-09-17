@@ -7,16 +7,16 @@
 
 namespace Layers {
 
-enum class Mode {Training, Eval};
-
 template <typename T> class LayerBase {
-protected:
+  protected:
     Vec2d<T> inputs;
     Vec2d<T> output;
     Vec2d<T> dInputs;
-public:
+
+  public:
     LayerBase() {}
-    virtual void compute(const Vec2d<T> &pInputs, Mode mode = Mode::Training) = 0;
+    virtual void compute(const Vec2d<T> &pInputs,
+                         LayerMode mode = LayerMode::Training) = 0;
     virtual void backward(const Vec2d<T> &dValues) = 0;
     Vec2d<T> getOutput();
     Vec2d<T> getDInputs();
@@ -52,7 +52,8 @@ template <typename T> class DenseLayer : public LayerBase<T> {
     DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1 = 0,
                T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
                T pBiasRegularizerL2 = 0);
-    void compute(const Vec2d<T> &pInputs, Mode mode = Mode::Training) override;
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &dValues) override;
 
     Vec2d<T> &getWeights();
@@ -87,7 +88,8 @@ template <typename T> class DropoutLayer : LayerBase<T> {
 
   public:
     DropoutLayer(T pRate);
-    void compute(const Vec2d<T> &pInputs, Mode mode = Mode::Training) override;
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &dValues) override;
 };
 

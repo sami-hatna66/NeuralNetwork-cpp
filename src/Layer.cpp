@@ -2,15 +2,9 @@
 
 namespace Layers {
 
-template <typename T>
-Vec2d<T> LayerBase<T>::getOutput() {
-    return output;
-}
+template <typename T> Vec2d<T> LayerBase<T>::getOutput() { return output; }
 
-template <typename T>
-Vec2d<T> LayerBase<T>::getDInputs() {
-    return dInputs;
-}
+template <typename T> Vec2d<T> LayerBase<T>::getDInputs() { return dInputs; }
 
 // FOR TESTING
 template <typename T>
@@ -19,8 +13,8 @@ DenseLayer<T>::DenseLayer(int num, int numInputs, int numNeurons,
                           T pBiasRegularizerL1, T pBiasRegularizerL2)
     : weightRegularizerL1{pWeightRegularizerL1},
       weightRegularizerL2{pWeightRegularizerL2},
-      biasRegularizerL1{pBiasRegularizerL1}, biasRegularizerL2{
-                                                 pBiasRegularizerL2}, LayerBase<T>{} {
+      biasRegularizerL1{pBiasRegularizerL1},
+      biasRegularizerL2{pBiasRegularizerL2}, LayerBase<T>{} {
     for (int i = 0; i < numInputs; i++) {
         weightMomentums.push_back(std::vector<T>(numNeurons, 0.0));
         weightCache.push_back(weightMomentums[i]);
@@ -2126,8 +2120,8 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
                           T pBiasRegularizerL2)
     : weightRegularizerL1{pWeightRegularizerL1},
       weightRegularizerL2{pWeightRegularizerL2},
-      biasRegularizerL1{pBiasRegularizerL1}, biasRegularizerL2{
-                                                 pBiasRegularizerL2}, LayerBase<T>{} {
+      biasRegularizerL1{pBiasRegularizerL1},
+      biasRegularizerL2{pBiasRegularizerL2}, LayerBase<T>{} {
     std::random_device rd{};
     std::mt19937 gen{rd()};
     std::normal_distribution<T> distr(0.0, 1.0);
@@ -2146,7 +2140,8 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
     dBiases.push_back({});
 }
 
-template <typename T> void DenseLayer<T>::compute(const Vec2d<T> &pInputs, Mode mode) {
+template <typename T>
+void DenseLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
     output = inputs * weights;
     for (int i = 0; i < output.size(); i++) {
@@ -2272,7 +2267,8 @@ template <typename T> DropoutLayer<T>::DropoutLayer(T pRate) : LayerBase<T>{} {
     rate = 1.0 - pRate;
 }
 
-template <typename T> void DropoutLayer<T>::compute(const Vec2d<T> &pInputs, Mode mode) {
+template <typename T>
+void DropoutLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
 
     mask = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));

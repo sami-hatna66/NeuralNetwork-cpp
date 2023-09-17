@@ -18,7 +18,8 @@ template <typename T> class ActivationBase {
     Vec2d<T> &getOutput();
     Vec2d<T> &getDInputs();
 
-    virtual void compute(const Vec2d<T> &pInputs) = 0;
+    virtual void compute(const Vec2d<T> &pInputs,
+                         LayerMode mode = LayerMode::Training) = 0;
     virtual void backward(const Vec2d<T> &pValues) = 0;
 };
 
@@ -30,7 +31,8 @@ template <typename T> class Relu : public ActivationBase<T> {
 
   public:
     Relu() {}
-    void compute(const Vec2d<T> &pInputs) override;
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
 };
 
@@ -42,7 +44,8 @@ template <typename T> class Softmax : public ActivationBase<T> {
 
   public:
     Softmax() {}
-    void compute(const Vec2d<T> &pInputs) override;
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
 };
 
@@ -54,7 +57,8 @@ template <typename T> class Sigmoid : public ActivationBase<T> {
 
   public:
     Sigmoid() {}
-    void compute(const Vec2d<T> &pInputs) override;
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
 };
 
@@ -66,7 +70,8 @@ template <typename T> class Linear : public ActivationBase<T> {
 
   public:
     Linear() {}
-    void compute(const Vec2d<T> &pInputs) override;
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
 };
 

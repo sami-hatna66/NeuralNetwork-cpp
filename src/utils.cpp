@@ -4,7 +4,7 @@ const int NUMTHREADS = std::thread::hardware_concurrency();
 
 template <typename T>
 void matmulKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
-                    const int startRow, const int endRow) {
+                  const int startRow, const int endRow) {
     const int colsA = a[0].size();
     const int colsB = b[0].size();
     for (int i = startRow; i < endRow; ++i) {

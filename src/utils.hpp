@@ -13,6 +13,8 @@ concept DecimalType = std::is_floating_point_v<T>;
 
 template <DecimalType T> using Vec2d = std::vector<std::vector<T>>;
 
+enum class LayerMode { Training, Eval };
+
 template <typename T> static void printVec(std::vector<T> &inp) {
     std::cout << std::setprecision(10);
     for (auto val : inp) {

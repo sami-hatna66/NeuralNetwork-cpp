@@ -10,7 +10,8 @@ template <typename T> Vec2d<T> &ActivationBase<T>::getDInputs() {
     return dInputs;
 }
 
-template <typename T> void Relu<T>::compute(const Vec2d<T> &pInputs) {
+template <typename T>
+void Relu<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
     if (output.size() == 0) {
         output = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size(), 0.0));
@@ -31,7 +32,8 @@ template <typename T> void Relu<T>::backward(const Vec2d<T> &pValues) {
     }
 }
 
-template <typename T> void Softmax<T>::compute(const Vec2d<T> &pInputs) {
+template <typename T>
+void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
 
     Vec2d<T> expValues =
@@ -92,7 +94,8 @@ template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
     }
 }
 
-template <typename T> void Sigmoid<T>::compute(const Vec2d<T> &pInputs) {
+template <typename T>
+void Sigmoid<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
     output = (T)1.0 / (exp((T)0.0 - inputs) + (T)1.0);
 }
@@ -102,7 +105,8 @@ template <typename T> void Sigmoid<T>::backward(const Vec2d<T> &pValues) {
     dInputs = eltwiseMult(pValues, eltwiseMult(adjustedOutput, output));
 }
 
-template <typename T> void Linear<T>::compute(const Vec2d<T> &pInputs) {
+template <typename T>
+void Linear<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
     output = pInputs;
 }
