@@ -2271,25 +2271,29 @@ template <typename T>
 void DropoutLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
 
-    mask = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));
-    std::random_device rd{};
-    std::mt19937 gen{rd()};
-    std::binomial_distribution<int> distr(1, rate);
-    for (int i = 0; i < mask.size(); i++) {
-        for (int j = 0; j < mask[i].size(); j++) {
-            mask[i][j] = distr(gen);
+    if (mode == LayerMode::Eval) {
+        output = inputs;
+    } else {
+        mask = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));
+        std::random_device rd{};
+        std::mt19937 gen{rd()};
+        std::binomial_distribution<int> distr(1, rate);
+        for (int i = 0; i < mask.size(); i++) {
+            for (int j = 0; j < mask[i].size(); j++) {
+                mask[i][j] = distr(gen);
+            }
         }
-    }
-    mask = mask / rate;
+        mask = mask / rate;
 
-    if (output.size() != inputs.size() ||
-        output[0].size() != inputs[0].size()) {
-        // avoids a copy in all but the first iteration
-        output = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));
-    }
-    for (int i = 0; i < output.size(); i++) {
-        for (int j = 0; j < output[i].size(); j++) {
-            output[i][j] = inputs[i][j] * mask[i][j];
+        if (output.size() != inputs.size() ||
+            output[0].size() != inputs[0].size()) {
+            // avoids a copy in all but the first iteration
+            output = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));
+        }
+        for (int i = 0; i < output.size(); i++) {
+            for (int j = 0; j < output[i].size(); j++) {
+                output[i][j] = inputs[i][j] * mask[i][j];
+            }
         }
     }
 }
@@ -2306,6 +2310,15 @@ template <typename T> void DropoutLayer<T>::backward(const Vec2d<T> &dValues) {
         }
     }
 }
+
+template <typename T> InputLayer<T>::InputLayer() : LayerBase<T>{} {}
+
+template <typename T>
+void InputLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
+    output = pInputs;
+}
+
+template <typename T> void InputLayer<T>::backward(const Vec2d<T> &dValues) {}
 
 // Explicit instantiations
 template class LayerBase<double>;

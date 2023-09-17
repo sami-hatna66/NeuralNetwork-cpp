@@ -93,6 +93,17 @@ template <typename T> class DropoutLayer : LayerBase<T> {
     void backward(const Vec2d<T> &dValues) override;
 };
 
+template <typename T> class InputLayer : LayerBase<T> {
+  private:
+    using LayerBase<T>::output;
+
+  public:
+    InputLayer();
+    void compute(const Vec2d<T> &pInputs,
+                 LayerMode mode = LayerMode::Training) override;
+    void backward(const Vec2d<T> &dValues) override;
+};
+
 } // namespace Layers
 
 #endif

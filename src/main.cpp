@@ -12,14 +12,14 @@
 #include "utils.hpp"
 
 int main() {
-    Layers::DenseLayer<double> layer1(0, 1, 64);
+    Layers::DenseLayer<double> layer1{0, 1, 64};
     Activations::Relu<double> activation1;
-    Layers::DenseLayer<double> layer2(1, 64, 64);
+    Layers::DenseLayer<double> layer2{1, 64, 64};
     Activations::Relu<double> activation2;
-    Layers::DenseLayer<double> layer3(2, 64, 1);
+    Layers::DenseLayer<double> layer3{2, 64, 1};
     Activations::Linear<double> activation3;
     Loss::MeanSquaredError<double> loss;
-    auto optimizer = Optimizers::Adam<double>(0.005, 0.001);
+    auto optimizer = Optimizers::Adam<double>{0.005, 0.001};
 
     auto startTime = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 1000; i++) {
