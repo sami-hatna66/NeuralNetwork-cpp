@@ -39,6 +39,7 @@ int main() {
             calculateAccuracy<double>(activation3.getOutput(), sineDataY);
 
         if (i % 100 == 0) {
+            auto endTime = std::chrono::high_resolution_clock::now();
             std::cout << "epoch: " << i << std::fixed << std::setprecision(3)
                       << ", accuracy: " << accuracy << std::fixed << std::fixed
                       << std::setprecision(3) << ", loss: " << lossVal
@@ -48,8 +49,7 @@ int main() {
                       << ", lr: " << optimizer.getCurrentLearningRate()
                       << ", time: "
                       << std::chrono::duration_cast<std::chrono::milliseconds>(
-                             std::chrono::high_resolution_clock::now() -
-                             startTime)
+                             endTime - startTime)
                              .count()
                       << " ms" << std::endl;
             auto startTime = std::chrono::high_resolution_clock::now();

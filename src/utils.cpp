@@ -2,22 +2,8 @@
 
 const int NUMTHREADS = std::thread::hardware_concurrency();
 
-template <typename T> Vec2d<T> operator*(const T num, const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
-    for (int i = 0; i < mat.size(); i++) {
-        for (int j = 0; j < mat[i].size(); j++) {
-            result[i][j] = mat[i][j] * num;
-        }
-    }
-    return result;
-}
-
-template <typename T> Vec2d<T> operator*(const Vec2d<T> &mat, const T num) {
-    return num * mat;
-}
-
 template <typename T>
-void multiplyKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
+void matmulKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
                     const int startRow, const int endRow) {
     const int colsA = a[0].size();
     const int colsB = b[0].size();
@@ -42,7 +28,7 @@ template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
     for (int i = 0; i < NUMTHREADS; i++) {
         const int startRow = i * rowsPerThread;
         const int endRow = std::min((i + 1) * rowsPerThread, (int)a.size());
-        threads.push_back(std::thread(multiplyKernel<T>, std::cref(a),
+        threads.push_back(std::thread(matmulKernel<T>, std::cref(a),
                                       std::cref(b), std::ref(result), startRow,
                                       endRow));
     }
@@ -52,6 +38,20 @@ template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
     }
 
     return result;
+}
+
+template <typename T> Vec2d<T> operator*(const T num, const Vec2d<T> &mat) {
+    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    for (int i = 0; i < mat.size(); i++) {
+        for (int j = 0; j < mat[i].size(); j++) {
+            result[i][j] = mat[i][j] * num;
+        }
+    }
+    return result;
+}
+
+template <typename T> Vec2d<T> operator*(const Vec2d<T> &mat, const T num) {
+    return num * mat;
 }
 
 template <typename T> Vec2d<T> operator/(const Vec2d<T> &mat, const T num) {

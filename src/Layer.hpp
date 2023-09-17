@@ -7,16 +7,28 @@
 
 namespace Layers {
 
-template <typename T> class DenseLayer {
-  private:
+enum class Mode {Training, Eval};
+
+template <typename T> class LayerBase {
+protected:
     Vec2d<T> inputs;
+    Vec2d<T> output;
+    Vec2d<T> dInputs;
+public:
+    LayerBase() {}
+    virtual void compute(const Vec2d<T> &pInputs, Mode mode = Mode::Training) = 0;
+    virtual void backward(const Vec2d<T> &dValues) = 0;
+    Vec2d<T> getOutput();
+    Vec2d<T> getDInputs();
+};
+
+template <typename T> class DenseLayer : public LayerBase<T> {
+  private:
     Vec2d<T> weights;
     Vec2d<T> biases;
-    Vec2d<T> output;
 
     Vec2d<T> dWeights;
     Vec2d<T> dBiases;
-    Vec2d<T> dInputs;
 
     Vec2d<T> weightMomentums;
     Vec2d<T> biasMomentums;
@@ -29,6 +41,10 @@ template <typename T> class DenseLayer {
     T biasRegularizerL1;
     T biasRegularizerL2;
 
+    using LayerBase<T>::inputs;
+    using LayerBase<T>::output;
+    using LayerBase<T>::dInputs;
+
   public:
     DenseLayer(int num, int numInputs, int numNeurons,
                T pWeightRegularizerL1 = 0, T pWeightRegularizerL2 = 0,
@@ -36,15 +52,13 @@ template <typename T> class DenseLayer {
     DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1 = 0,
                T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
                T pBiasRegularizerL2 = 0);
-    void compute(const Vec2d<T> &pInputs);
-    void backward(const Vec2d<T> &dValues);
+    void compute(const Vec2d<T> &pInputs, Mode mode = Mode::Training) override;
+    void backward(const Vec2d<T> &dValues) override;
 
-    Vec2d<T> &getOutput();
     Vec2d<T> &getWeights();
     Vec2d<T> &getBiases();
     Vec2d<T> &getDWeights();
     Vec2d<T> &getDBiases();
-    Vec2d<T> &getDInputs();
     Vec2d<T> &getWeightMomentums();
     Vec2d<T> &getBiasMomentums();
     Vec2d<T> &getWeightCache();
@@ -62,21 +76,19 @@ template <typename T> class DenseLayer {
     void setBiases(const Vec2d<T> &newBiases);
 };
 
-template <typename T> class DropoutLayer {
+template <typename T> class DropoutLayer : LayerBase<T> {
   private:
-    Vec2d<T> inputs;
-    Vec2d<T> output;
-    Vec2d<T> dInputs;
     Vec2d<T> mask;
     T rate;
 
+    using LayerBase<T>::inputs;
+    using LayerBase<T>::output;
+    using LayerBase<T>::dInputs;
+
   public:
     DropoutLayer(T pRate);
-    void compute(const Vec2d<T> &pInputs);
-    void backward(const Vec2d<T> &dValues);
-
-    Vec2d<T> getOutput();
-    Vec2d<T> getDInputs();
+    void compute(const Vec2d<T> &pInputs, Mode mode = Mode::Training) override;
+    void backward(const Vec2d<T> &dValues) override;
 };
 
 } // namespace Layers
