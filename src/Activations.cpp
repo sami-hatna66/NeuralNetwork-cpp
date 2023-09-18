@@ -32,6 +32,10 @@ template <typename T> void Relu<T>::backward(const Vec2d<T> &pValues) {
     }
 }
 
+template <typename T> Vec2d<T> Relu<T>::predict(Vec2d<T>& outputs) {
+    return outputs;
+}
+
 template <typename T>
 void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -94,6 +98,15 @@ template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
     }
 }
 
+template <typename T> Vec2d<T> Softmax<T>::predict(Vec2d<T>& outputs) {
+    std::vector<T> pred(outputs.size());
+    for (int i = 0; i < outputs.size(); i++) {
+        auto maxIter = std::max_element(outputs[i].begin(), outputs[i].end());
+        pred[i] = std::distance(outputs[i].begin(), maxIter);
+    }
+    return pred;
+}
+
 template <typename T>
 void Sigmoid<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -105,6 +118,16 @@ template <typename T> void Sigmoid<T>::backward(const Vec2d<T> &pValues) {
     dInputs = eltwiseMult(pValues, eltwiseMult(adjustedOutput, output));
 }
 
+template <typename T> Vec2d<T> Sigmoid<T>::predict(Vec2d<T>& outputs) {
+    Vec2d<T> pred(outputs.size(), std::vector<T>(outputs[0].size()));
+    for (int i = 0; i < outputs.size(); i++) {
+        for (int j = 0; j < outputs[i].size(); j++) {
+            pred[i][j] = outputs[i][j] > 0.5;
+        }
+    }
+    return pred;
+}
+
 template <typename T>
 void Linear<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -113,6 +136,10 @@ void Linear<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
 
 template <typename T> void Linear<T>::backward(const Vec2d<T> &pValues) {
     dInputs = pValues;
+}
+
+template <typename T> Vec2d<T> Linear<T>::predict(Vec2d<T>& outputs) {
+    return outputs;
 }
 
 // Explicit instantiations
