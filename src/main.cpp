@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 
+#include "Accuracy.hpp"
 #include "Activations.hpp"
 #include "Layer.hpp"
 #include "Loss.hpp"

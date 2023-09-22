@@ -199,6 +199,16 @@ template <typename T> Vec2d<T> transpose(const Vec2d<T> &mat) {
     return result;
 }
 
+template <typename T> T mean(const Vec2d<T> &mat) {
+    T sum = 0.0;
+    for (auto row : mat) {
+        for (auto val : row) {
+            sum += val;
+        }
+    }
+    return sum / (mat.size() * mat[0].size());
+}
+
 template <typename T>
 Vec2d<T> eltwiseMult(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a.size() == b.size() && a[0].size() == b[0].size());
@@ -319,6 +329,9 @@ template Vec2d<float> abs(const Vec2d<float> &mat);
 
 template Vec2d<double> transpose(const Vec2d<double> &mat);
 template Vec2d<float> transpose(const Vec2d<float> &mat);
+
+template double mean(const Vec2d<double> &mat);
+template float mean(const Vec2d<float> &mat);
 
 template Vec2d<double> eltwiseMult(const Vec2d<double> &a,
                                    const Vec2d<double> &b);

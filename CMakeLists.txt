@@ -21,6 +21,8 @@ add_executable(nnfs
     src/LossActivation.hpp
     src/Optimizers.cpp
     src/Optimizers.hpp
+    src/Accuracy.cpp
+    src/Accuracy.hpp
     src/main.cpp 
 )
 

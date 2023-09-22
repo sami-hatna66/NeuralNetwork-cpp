@@ -79,6 +79,8 @@ template <typename T> Vec2d<T> abs(const Vec2d<T> &mat);
 
 template <typename T> Vec2d<T> transpose(const Vec2d<T> &mat);
 
+template <typename T> T mean(const Vec2d<T> &mat);
+
 template <typename T>
 Vec2d<T> eltwiseMult(const Vec2d<T> &a, const Vec2d<T> &b);
 
