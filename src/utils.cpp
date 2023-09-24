@@ -20,7 +20,7 @@ template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a[0].size() == b.size());
     Vec2d<T> result(a.size(), std::vector<T>(b[0].size(), 0.0));
 
-    int rowsPerThread = (a.size() + NUMTHREADS - 1) / NUMTHREADS;
+    const int rowsPerThread = (a.size() + NUMTHREADS - 1) / NUMTHREADS;
 
     std::vector<std::thread> threads;
     threads.reserve(NUMTHREADS);

@@ -10,7 +10,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
 
 add_executable(nnfs 
     src/utils.hpp 
-    src/utils.cpp 
+    src/utils.cpp
+    src/Model.hpp 
+    src/Model.cpp
     src/Activations.cpp 
     src/Activations.hpp
     src/Layer.cpp

@@ -8,6 +8,7 @@
 #include "Layer.hpp"
 #include "Loss.hpp"
 #include "LossActivation.hpp"
+#include "Model.hpp"
 #include "Optimizers.hpp"
 #include "TestData.hpp"
 #include "utils.hpp"

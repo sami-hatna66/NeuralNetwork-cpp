@@ -16,6 +16,7 @@ template <typename T> class CategoricalAccuracy : public AccuracyBase<T> {
     bool isBinary;
 
   public:
+    CategoricalAccuracy() {}
     CategoricalAccuracy(bool pIsBinary);
     Vec2d<T> predict(Vec2d<T> &predictions, Vec2d<T> &actualY) override;
 };
@@ -25,6 +26,7 @@ template <typename T> class RegressionAccuracy : public AccuracyBase<T> {
     T precision;
 
   public:
+    RegressionAccuracy() {}
     RegressionAccuracy(Vec2d<T> &actualY);
     Vec2d<T> predict(Vec2d<T> &predictions, Vec2d<T> &actualY) override;
 };
