@@ -23,6 +23,11 @@ int main() {
     Loss::MeanSquaredError<double> loss;
     auto optimizer = Optimizers::Adam<double>{0.005, 0.001};
 
+    Model<float, Accuracy::CategoricalAccuracy, Optimizers::Adam,
+          Loss::BinaryCrossEntropy>
+        m;
+    m.addLayer(layer1);
+
     auto startTime = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 1000; i++) {
         layer1.compute(sineDataX);
@@ -56,7 +61,7 @@ int main() {
                       << " ms" << std::endl;
             auto startTime = std::chrono::high_resolution_clock::now();
         }
-
+        
         loss.backward(activation3.getOutput(), sineDataY);
         activation3.backward(loss.getDInputs());
         layer3.backward(activation3.getDInputs());
