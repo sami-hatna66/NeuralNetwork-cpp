@@ -2,6 +2,7 @@
 #define Model_hpp
 
 #include "Accuracy.hpp"
+#include "ModelLayer.hpp"
 #include "Activations.hpp"
 #include "Layer.hpp"
 #include "Loss.hpp"
@@ -9,7 +10,6 @@
 #include "Optimizers.hpp"
 #include "utils.hpp"
 
-#include <any>
 #include <vector>
 
 template <typename T, template <typename> class AccuracyType,
@@ -17,18 +17,18 @@ template <typename T, template <typename> class AccuracyType,
           template <typename> class LossType>
 class Model {
   private:
-    std::vector<std::any> layers;
-    std::vector<std::any> trainableLayers;
-    Vec2d<T> SoftmaxClassifierOutput;
+    // layer, isTrainable
+    std::vector<std::shared_ptr<ModelLayer<T>>> layers;
     LossType<T> loss;
     AccuracyType<T> accuracy;
     OptimizerType<T> optimizer;
-    LossActivation::SoftmaxCCE<T> lossacc;
-    Layers::InputLayer<T> inputLayer;
+    LossActivation::SoftmaxCCE<T> lossAcc;
+    bool useLossAcc = false;
 
   public:
     Model();
-    void addLayer(std::any layer);
+    template <typename Derived>
+    void addLayer(std::shared_ptr<Derived> layer);
     void setOptimizer(OptimizerType<T> pOptimizer);
     void setAccuracy(AccuracyType<T> pAccuracy);
     void setLoss(LossType<T> pLoss);

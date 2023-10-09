@@ -2,14 +2,6 @@
 
 namespace Activations {
 
-template <typename T> Vec2d<T> &ActivationBase<T>::getOutput() {
-    return output;
-}
-
-template <typename T> Vec2d<T> &ActivationBase<T>::getDInputs() {
-    return dInputs;
-}
-
 template <typename T>
 void Relu<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -144,8 +136,6 @@ template <typename T> Vec2d<T> Linear<T>::predict(Vec2d<T> &outputs) {
 }
 
 // Explicit instantiations
-template class ActivationBase<double>;
-template class ActivationBase<float>;
 template class Relu<double>;
 template class Relu<float>;
 template class Softmax<double>;

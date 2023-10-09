@@ -2,10 +2,6 @@
 
 namespace Layers {
 
-template <typename T> Vec2d<T> LayerBase<T>::getOutput() { return output; }
-
-template <typename T> Vec2d<T> LayerBase<T>::getDInputs() { return dInputs; }
-
 // FOR TESTING
 template <typename T>
 DenseLayer<T>::DenseLayer(int num, int numInputs, int numNeurons,
@@ -14,7 +10,7 @@ DenseLayer<T>::DenseLayer(int num, int numInputs, int numNeurons,
     : weightRegularizerL1{pWeightRegularizerL1},
       weightRegularizerL2{pWeightRegularizerL2},
       biasRegularizerL1{pBiasRegularizerL1},
-      biasRegularizerL2{pBiasRegularizerL2}, LayerBase<T>{} {
+      biasRegularizerL2{pBiasRegularizerL2}, ModelLayer<T>{} {
     for (int i = 0; i < numInputs; i++) {
         weightMomentums.push_back(std::vector<T>(numNeurons, 0.0));
         weightCache.push_back(weightMomentums[i]);
@@ -2121,7 +2117,7 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
     : weightRegularizerL1{pWeightRegularizerL1},
       weightRegularizerL2{pWeightRegularizerL2},
       biasRegularizerL1{pBiasRegularizerL1},
-      biasRegularizerL2{pBiasRegularizerL2}, LayerBase<T>{} {
+      biasRegularizerL2{pBiasRegularizerL2}, ModelLayer<T>{} {
     std::random_device rd{};
     std::mt19937 gen{rd()};
     std::normal_distribution<T> distr(0.0, 1.0);
@@ -2263,7 +2259,7 @@ void DenseLayer<T>::setBiasCache(const Vec2d<T> &newBiasCache) {
     biasCache = newBiasCache;
 }
 
-template <typename T> DropoutLayer<T>::DropoutLayer(T pRate) : LayerBase<T>{} {
+template <typename T> DropoutLayer<T>::DropoutLayer(T pRate) : ModelLayer<T>{} {
     rate = 1.0 - pRate;
 }
 
@@ -2311,7 +2307,7 @@ template <typename T> void DropoutLayer<T>::backward(const Vec2d<T> &dValues) {
     }
 }
 
-template <typename T> InputLayer<T>::InputLayer() : LayerBase<T>{} {}
+template <typename T> InputLayer<T>::InputLayer() : ModelLayer<T>{} {}
 
 template <typename T>
 void InputLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
@@ -2321,11 +2317,11 @@ void InputLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
 template <typename T> void InputLayer<T>::backward(const Vec2d<T> &dValues) {}
 
 // Explicit instantiations
-template class LayerBase<double>;
-template class LayerBase<float>;
 template class DenseLayer<double>;
 template class DenseLayer<float>;
 template class DropoutLayer<double>;
 template class DropoutLayer<float>;
+template class InputLayer<double>;
+template class InputLayer<float>;
 
 } // namespace Layers

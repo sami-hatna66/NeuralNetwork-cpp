@@ -25,6 +25,8 @@ add_executable(nnfs
     src/Optimizers.hpp
     src/Accuracy.cpp
     src/Accuracy.hpp
+    src/ModelLayer.hpp
+    src/ModelLayer.cpp
     src/main.cpp 
 )
 

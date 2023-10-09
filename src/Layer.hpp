@@ -2,27 +2,13 @@
 #define Layer_hpp
 
 #include "utils.hpp"
+#include "ModelLayer.hpp"
 
 #include <random>
 
 namespace Layers {
 
-template <typename T> class LayerBase {
-  protected:
-    Vec2d<T> inputs;
-    Vec2d<T> output;
-    Vec2d<T> dInputs;
-
-  public:
-    LayerBase() {}
-    virtual void compute(const Vec2d<T> &pInputs,
-                         LayerMode mode = LayerMode::Training) = 0;
-    virtual void backward(const Vec2d<T> &dValues) = 0;
-    Vec2d<T> getOutput();
-    Vec2d<T> getDInputs();
-};
-
-template <typename T> class DenseLayer : public LayerBase<T> {
+template <typename T> class DenseLayer : public ModelLayer<T> {
   private:
     Vec2d<T> weights;
     Vec2d<T> biases;
@@ -41,9 +27,9 @@ template <typename T> class DenseLayer : public LayerBase<T> {
     T biasRegularizerL1;
     T biasRegularizerL2;
 
-    using LayerBase<T>::inputs;
-    using LayerBase<T>::output;
-    using LayerBase<T>::dInputs;
+    using ModelLayer<T>::inputs;
+    using ModelLayer<T>::output;
+    using ModelLayer<T>::dInputs;
 
   public:
     DenseLayer(int num, int numInputs, int numNeurons,
@@ -77,14 +63,14 @@ template <typename T> class DenseLayer : public LayerBase<T> {
     void setBiases(const Vec2d<T> &newBiases);
 };
 
-template <typename T> class DropoutLayer : LayerBase<T> {
+template <typename T> class DropoutLayer : public ModelLayer<T> {
   private:
     Vec2d<T> mask;
     T rate;
 
-    using LayerBase<T>::inputs;
-    using LayerBase<T>::output;
-    using LayerBase<T>::dInputs;
+    using ModelLayer<T>::inputs;
+    using ModelLayer<T>::output;
+    using ModelLayer<T>::dInputs;
 
   public:
     DropoutLayer(T pRate);
@@ -93,9 +79,9 @@ template <typename T> class DropoutLayer : LayerBase<T> {
     void backward(const Vec2d<T> &dValues) override;
 };
 
-template <typename T> class InputLayer : LayerBase<T> {
+template <typename T> class InputLayer : public ModelLayer<T> {
   private:
-    using LayerBase<T>::output;
+    using ModelLayer<T>::output;
 
   public:
     InputLayer();

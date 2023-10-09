@@ -23,10 +23,10 @@ int main() {
     Loss::MeanSquaredError<double> loss;
     auto optimizer = Optimizers::Adam<double>{0.005, 0.001};
 
-    Model<float, Accuracy::CategoricalAccuracy, Optimizers::Adam,
-          Loss::BinaryCrossEntropy>
-        m;
-    m.addLayer(layer1);
+    Model<double, Accuracy::CategoricalAccuracy, Optimizers::Adam,
+          Loss::BinaryCrossEntropy> m;
+    auto l = std::make_shared<Layers::InputLayer<double>>();
+    m.addLayer(l);
 
     auto startTime = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 1000; i++) {
