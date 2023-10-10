@@ -4,8 +4,8 @@ namespace Optimizers {
 
 template <typename T>
 OptimizerBase<T>::OptimizerBase(T pLearningRate, T pDecay)
-    : learningRate{pLearningRate},
-      currentLearningRate{pLearningRate}, decay{pDecay}, iterations{0} {}
+    : learningRate{pLearningRate}, currentLearningRate{pLearningRate},
+      decay{pDecay}, iterations{0} {}
 
 template <typename T> void OptimizerBase<T>::setup() {
     if (decay != 0) {
@@ -84,9 +84,8 @@ void RMSprop<T>::updateParams(Layers::DenseLayer<T> &layer) {
 
 template <typename T>
 Adam<T>::Adam(T pLearningRate, T pDecay, T pEpsilon, T pBeta1, T pBeta2)
-    : epsilon{pEpsilon}, beta1{pBeta1}, beta2{pBeta2}, OptimizerBase<T>{
-                                                           pLearningRate,
-                                                           pDecay} {}
+    : epsilon{pEpsilon}, beta1{pBeta1}, beta2{pBeta2},
+      OptimizerBase<T>{pLearningRate, pDecay} {}
 
 template <typename T> void Adam<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightMomentums(beta1 * layer.getWeightMomentums() +

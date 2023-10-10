@@ -1,8 +1,8 @@
 #ifndef Layer_hpp
 #define Layer_hpp
 
-#include "utils.hpp"
 #include "ModelLayer.hpp"
+#include "utils.hpp"
 
 #include <random>
 
@@ -30,6 +30,7 @@ template <typename T> class DenseLayer : public ModelLayer<T> {
     using ModelLayer<T>::inputs;
     using ModelLayer<T>::output;
     using ModelLayer<T>::dInputs;
+    using ModelLayer<T>::isTrainable;
 
   public:
     DenseLayer(int num, int numInputs, int numNeurons,

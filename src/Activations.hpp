@@ -1,8 +1,8 @@
 #ifndef Activations_hpp
 #define Activations_hpp
 
-#include "utils.hpp"
 #include "ModelLayer.hpp"
+#include "utils.hpp"
 
 #include <numeric>
 
@@ -19,7 +19,7 @@ template <typename T> class Relu : public ModelLayer<T> {
     void compute(const Vec2d<T> &pInputs,
                  LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
-    Vec2d<T> predict(Vec2d<T> &outputs);
+    Vec2d<T> predict(Vec2d<T> &outputs) override;
 };
 
 template <typename T> class Softmax : public ModelLayer<T> {
@@ -33,7 +33,7 @@ template <typename T> class Softmax : public ModelLayer<T> {
     void compute(const Vec2d<T> &pInputs,
                  LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
-    Vec2d<T> predict(Vec2d<T> &outputs);
+    Vec2d<T> predict(Vec2d<T> &outputs) override;
 };
 
 template <typename T> class Sigmoid : public ModelLayer<T> {
@@ -47,7 +47,7 @@ template <typename T> class Sigmoid : public ModelLayer<T> {
     void compute(const Vec2d<T> &pInputs,
                  LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
-    Vec2d<T> predict(Vec2d<T> &outputs);
+    Vec2d<T> predict(Vec2d<T> &outputs) override;
 };
 
 template <typename T> class Linear : public ModelLayer<T> {
@@ -61,7 +61,7 @@ template <typename T> class Linear : public ModelLayer<T> {
     void compute(const Vec2d<T> &pInputs,
                  LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &pValues) override;
-    Vec2d<T> predict(Vec2d<T> &outputs);
+    Vec2d<T> predict(Vec2d<T> &outputs) override;
 };
 
 } // namespace Activations
