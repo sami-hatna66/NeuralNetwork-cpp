@@ -8,10 +8,7 @@
 #include <thread>
 #include <vector>
 
-template <typename T>
-concept DecimalType = std::is_floating_point_v<T>;
-
-template <DecimalType T> using Vec2d = std::vector<std::vector<T>>;
+#include "Vec2d.hpp"
 
 enum class LayerMode { Training, Eval };
 

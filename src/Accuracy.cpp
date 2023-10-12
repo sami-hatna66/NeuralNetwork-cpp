@@ -14,12 +14,15 @@ CategoricalAccuracy<T>::CategoricalAccuracy(bool pIsBinary)
 template <typename T>
 Vec2d<T> CategoricalAccuracy<T>::predict(Vec2d<T> &predictions,
                                          Vec2d<T> &actualY) {
-    Vec2d<T> adjY = {{}};
+    Vec2d<T> adjY;
     if (!isBinary && actualY.size() > 1) {
-        for (auto row : actualY) {
+        std::vector<T> contents;
+        for (int i = 0; i < actualY.getRows(); i++) {
+            auto row = actualY[i];
             auto maxIter = std::max_element(row.begin(), row.end());
-            adjY[0].push_back(std::distance(row.begin(), maxIter));
+            contents.push_back(std::distance(row.begin(), maxIter));
         }
+        adjY = {contents};
     } else {
         adjY = actualY;
     }

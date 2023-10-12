@@ -6,7 +6,7 @@ template <typename T>
 void Relu<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
     if (output.size() == 0) {
-        output = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size(), 0.0));
+        output = Vec2d<T>(inputs.size(), inputs[0].size());
     }
     for (int i = 0; i < inputs.size(); i++) {
         for (int j = 0; j < inputs[i].size(); j++) {
@@ -33,7 +33,7 @@ void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
 
     Vec2d<T> expValues =
-        Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size(), 0.0));
+        Vec2d<T>(inputs.size(), inputs[0].size());
     for (int i = 0; i < inputs.size(); i++) {
         T rowMax = *std::max_element(inputs[i].begin(), inputs[i].end());
         for (int j = 0; j < inputs[i].size(); j++) {
@@ -43,7 +43,7 @@ void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
 
     if (output.size() == 0) {
         output = Vec2d<T>(expValues.size(),
-                          std::vector<T>(expValues[0].size(), 0.0));
+                          expValues[0].size());
     }
     for (int i = 0; i < expValues.size(); i++) {
         T rowSum = std::accumulate(expValues[i].begin(), expValues[i].end(),
@@ -55,15 +55,15 @@ void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
 }
 
 template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
-    dInputs = Vec2d<T>(pValues.size(), std::vector<T>(pValues[0].size(), 0.0));
+    dInputs = Vec2d<T>(pValues.size(), pValues[0].size());
 
-    Vec2d<T> diagFlat(output[0].size(), std::vector<T>(output[0].size(), 0.0));
+    Vec2d<T> diagFlat(output[0].size(), output[0].size(), 0.0);
     for (int i = 0; i < pValues.size(); i++) {
         auto singleOutput = output[i];
         // Candidate for optimisation
         Vec2d<T> reshapedSingleOutput;
         for (int j = 0; j < singleOutput.size(); j++) {
-            reshapedSingleOutput.push_back({singleOutput[j]});
+            reshapedSingleOutput.push_back(std::vector<T>({singleOutput[j]}));
         }
 
         for (int j = 0; j < reshapedSingleOutput.size(); j++) {
@@ -91,7 +91,7 @@ template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
 }
 
 template <typename T> Vec2d<T> Softmax<T>::predict(Vec2d<T> &outputs) {
-    Vec2d<T> pred(1, std::vector<T>(outputs.size()));
+    Vec2d<T> pred(1, outputs.size());
     for (int i = 0; i < outputs.size(); i++) {
         auto maxIter = std::max_element(outputs[i].begin(), outputs[i].end());
         pred[0][i] = std::distance(outputs[i].begin(), maxIter);
@@ -112,7 +112,7 @@ template <typename T> void Sigmoid<T>::backward(const Vec2d<T> &pValues) {
 }
 
 template <typename T> Vec2d<T> Sigmoid<T>::predict(Vec2d<T> &outputs) {
-    Vec2d<T> pred(outputs.size(), std::vector<T>(outputs[0].size()));
+    Vec2d<T> pred(outputs.size(), outputs[0].size());
     for (int i = 0; i < outputs.size(); i++) {
         for (int j = 0; j < outputs[i].size(); j++) {
             pred[i][j] = outputs[i][j] > 0.5;

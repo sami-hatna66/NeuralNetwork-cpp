@@ -18,7 +18,7 @@ void matmulKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
 
 template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a[0].size() == b.size());
-    Vec2d<T> result(a.size(), std::vector<T>(b[0].size(), 0.0));
+    Vec2d<T> result(a.size(), b[0].size());
 
     const int rowsPerThread = (a.size() + NUMTHREADS - 1) / NUMTHREADS;
 
@@ -41,7 +41,7 @@ template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
 }
 
 template <typename T> Vec2d<T> operator*(const T num, const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = mat[i][j] * num;
@@ -55,7 +55,7 @@ template <typename T> Vec2d<T> operator*(const Vec2d<T> &mat, const T num) {
 }
 
 template <typename T> Vec2d<T> operator/(const Vec2d<T> &mat, const T num) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size(), 0.0);
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = mat[i][j] / num;
@@ -65,7 +65,7 @@ template <typename T> Vec2d<T> operator/(const Vec2d<T> &mat, const T num) {
 }
 
 template <typename T> Vec2d<T> operator/(const T num, const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = num / mat[i][j];
@@ -76,7 +76,7 @@ template <typename T> Vec2d<T> operator/(const T num, const Vec2d<T> &mat) {
 
 template <typename T> Vec2d<T> operator/(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a.size() == b.size() && a[0].size() == b[0].size());
-    Vec2d<T> result(a.size(), std::vector<T>(a[0].size(), 0.0));
+    Vec2d<T> result(a.size(), a[0].size(), 0.0);
     for (int i = 0; i < a.size(); i++) {
         for (int j = 0; j < a[i].size(); j++) {
             result[i][j] = a[i][j] / b[i][j];
@@ -86,7 +86,7 @@ template <typename T> Vec2d<T> operator/(const Vec2d<T> &a, const Vec2d<T> &b) {
 }
 
 template <typename T> Vec2d<T> operator-(const Vec2d<T> &mat, const T num) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = mat[i][j] - num;
@@ -96,7 +96,7 @@ template <typename T> Vec2d<T> operator-(const Vec2d<T> &mat, const T num) {
 }
 
 template <typename T> Vec2d<T> operator-(const T num, const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size(), 0.0);
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = num - mat[i][j];
@@ -107,7 +107,7 @@ template <typename T> Vec2d<T> operator-(const T num, const Vec2d<T> &mat) {
 
 template <typename T> Vec2d<T> operator-(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a.size() == b.size() && a[0].size() == b[0].size());
-    Vec2d<T> result(a.size(), std::vector<T>(a[0].size(), 0.0));
+    Vec2d<T> result(a.size(), a[0].size());
     for (int i = 0; i < a.size(); i++) {
         for (int j = 0; j < a[i].size(); j++) {
             result[i][j] = a[i][j] - b[i][j];
@@ -117,7 +117,7 @@ template <typename T> Vec2d<T> operator-(const Vec2d<T> &a, const Vec2d<T> &b) {
 }
 
 template <typename T> Vec2d<T> operator+(const Vec2d<T> &mat, const T num) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = mat[i][j] + num;
@@ -128,7 +128,7 @@ template <typename T> Vec2d<T> operator+(const Vec2d<T> &mat, const T num) {
 
 template <typename T> Vec2d<T> operator+(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a.size() == b.size() && a[0].size() == b[0].size());
-    Vec2d<T> result(a.size(), std::vector<T>(a[0].size(), 0.0));
+    Vec2d<T> result(a.size(), a[0].size());
     for (int i = 0; i < a.size(); i++) {
         for (int j = 0; j < a[i].size(); j++) {
             result[i][j] = a[i][j] + b[i][j];
@@ -138,7 +138,7 @@ template <typename T> Vec2d<T> operator+(const Vec2d<T> &a, const Vec2d<T> &b) {
 }
 
 template <typename T> Vec2d<T> power(const Vec2d<T> &mat, const T exponent) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = std::pow(mat[i][j], exponent);
@@ -148,7 +148,7 @@ template <typename T> Vec2d<T> power(const Vec2d<T> &mat, const T exponent) {
 }
 
 template <typename T> Vec2d<T> root(const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             assert(mat[i][j] >= 0);
@@ -159,7 +159,7 @@ template <typename T> Vec2d<T> root(const Vec2d<T> &mat) {
 }
 
 template <typename T> Vec2d<T> exp(const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = std::exp(mat[i][j]);
@@ -169,7 +169,7 @@ template <typename T> Vec2d<T> exp(const Vec2d<T> &mat) {
 }
 
 template <typename T> Vec2d<T> log(const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             assert(mat[i][j] != 0);
@@ -180,7 +180,7 @@ template <typename T> Vec2d<T> log(const Vec2d<T> &mat) {
 }
 
 template <typename T> Vec2d<T> abs(const Vec2d<T> &mat) {
-    Vec2d<T> result(mat.size(), std::vector<T>(mat[0].size(), 0.0));
+    Vec2d<T> result(mat.size(), mat[0].size());
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[i].size(); j++) {
             result[i][j] = std::abs(mat[i][j]);
@@ -190,7 +190,7 @@ template <typename T> Vec2d<T> abs(const Vec2d<T> &mat) {
 }
 
 template <typename T> Vec2d<T> transpose(const Vec2d<T> &mat) {
-    Vec2d<T> result(mat[0].size(), std::vector<T>(mat.size(), 0.0));
+    Vec2d<T> result(mat[0].size(), mat.size());
     for (int i = 0; i < mat[0].size(); i++) {
         for (int j = 0; j < mat.size(); j++) {
             result[i][j] = mat[j][i];
@@ -201,7 +201,8 @@ template <typename T> Vec2d<T> transpose(const Vec2d<T> &mat) {
 
 template <typename T> T mean(const Vec2d<T> &mat) {
     T sum = 0.0;
-    for (auto row : mat) {
+    for (int i = 0; i < mat.getRows(); i++) {
+        auto row = mat[i];
         for (auto val : row) {
             sum += val;
         }
@@ -212,7 +213,7 @@ template <typename T> T mean(const Vec2d<T> &mat) {
 template <typename T>
 Vec2d<T> eltwiseMult(const Vec2d<T> &a, const Vec2d<T> &b) {
     assert(a.size() == b.size() && a[0].size() == b[0].size());
-    Vec2d<T> result(a.size(), std::vector<T>(a[0].size(), 0.0));
+    Vec2d<T> result(a.size(), a[0].size());
     for (int i = 0; i < a.size(); i++) {
         for (int j = 0; j < a[i].size(); j++) {
             result[i][j] = a[i][j] * b[i][j];

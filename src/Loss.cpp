@@ -225,7 +225,7 @@ void MeanAbsoluteError<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
     T numSamples = dValues.size();
     T numLabels = dValues[0].size();
 
-    Vec2d<T> signs(dValues.size(), std::vector<T>(dValues[0].size()));
+    Vec2d<T> signs(dValues.size(), dValues[0].size());
     auto yAdjusted = actualY - dValues;
     for (int i = 0; i < signs.size(); i++) {
         for (int j = 0; j < signs[i].size(); j++) {

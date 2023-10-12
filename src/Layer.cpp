@@ -15,7 +15,7 @@ DenseLayer<T>::DenseLayer(int num, int numInputs, int numNeurons,
         weightMomentums.push_back(std::vector<T>(numNeurons, 0.0));
         weightCache.push_back(weightMomentums[i]);
     }
-
+    
     if (num == 0) {
         weights = {
             {-1.30652683e-02, 1.65813062e-02,  -1.18164043e-03, -6.80178218e-03,
@@ -835,7 +835,7 @@ DenseLayer<T>::DenseLayer(int num, int numInputs, int numNeurons,
     biases.push_back(std::vector<T>(numNeurons, 0.0));
     biasMomentums.push_back(biases[0]);
     biasCache.push_back(biases[0]);
-    dBiases.push_back({});
+    dBiases.push_back(std::vector<T>({}));
 
     isTrainable = true;
 }
@@ -851,7 +851,7 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
     std::random_device rd{};
     std::mt19937 gen{rd()};
     std::normal_distribution<T> distr(0.0, 1.0);
-    weights.resize(numInputs, std::vector<T>(numNeurons));
+    weights.resize(numInputs, numNeurons);
     for (int i = 0; i < numInputs; i++) {
         for (int j = 0; j < numNeurons; j++) {
             weights[i][j] = 0.01 * distr(gen);
@@ -863,7 +863,7 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
     biases.push_back(std::vector<T>(numNeurons, 0.0));
     biasMomentums.push_back(biases[0]);
     biasCache.push_back(biases[0]);
-    dBiases.push_back({});
+    dBiases.push_back(std::vector<T>({}));
 
     isTrainable = true;
 }
@@ -871,6 +871,7 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
 template <typename T>
 void DenseLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
+
     output = inputs * weights;
     for (int i = 0; i < output.size(); i++) {
         for (int j = 0; j < biases[0].size(); j++) {
@@ -891,7 +892,7 @@ template <typename T> void DenseLayer<T>::backward(const Vec2d<T> &dValues) {
     dBiases.push_back(sums);
 
     if (weightRegularizerL1 > 0) {
-        Vec2d<T> dL1(weights.size(), std::vector<T>(weights[0].size(), 1.0));
+        Vec2d<T> dL1(weights.size(), weights[0].size());
         for (int i = 0; i < weights.size(); i++) {
             for (int j = 0; j < weights[i].size(); j++) {
                 if (weights[i][j] < 0)
@@ -904,7 +905,7 @@ template <typename T> void DenseLayer<T>::backward(const Vec2d<T> &dValues) {
         dWeights = dWeights + (2 * weightRegularizerL2 * weights);
     }
     if (biasRegularizerL1 > 0) {
-        Vec2d<T> dL1(biases.size(), std::vector<T>(biases[0].size(), 1.0));
+        Vec2d<T> dL1(biases.size(), biases[0].size(), 1.0);
         for (int i = 0; i < biases.size(); i++) {
             for (int j = 0; j < biases[i].size(); j++) {
                 if (biases[i][j] < 0)
@@ -1002,7 +1003,7 @@ void DropoutLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     if (mode == LayerMode::Eval) {
         output = inputs;
     } else {
-        mask = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));
+        mask = Vec2d<T>(inputs.size(), inputs[0].size());
         std::random_device rd{};
         std::mt19937 gen{rd()};
         std::binomial_distribution<int> distr(1, rate);
@@ -1016,7 +1017,7 @@ void DropoutLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
         if (output.size() != inputs.size() ||
             output[0].size() != inputs[0].size()) {
             // avoids a copy in all but the first iteration
-            output = Vec2d<T>(inputs.size(), std::vector<T>(inputs[0].size()));
+            output = Vec2d<T>(inputs.size(), inputs[0].size());
         }
         for (int i = 0; i < output.size(); i++) {
             for (int j = 0; j < output[i].size(); j++) {
@@ -1030,7 +1031,7 @@ template <typename T> void DropoutLayer<T>::backward(const Vec2d<T> &dValues) {
     if (dInputs.size() != dValues.size() ||
         dInputs[0].size() != dValues[0].size()) {
         // avoids a copy in all but the first iteration
-        dInputs = Vec2d<T>(dValues.size(), std::vector<T>(dValues[0].size()));
+        dInputs = Vec2d<T>(dValues.size(), dValues[0].size());
     }
     for (int i = 0; i < dInputs.size(); i++) {
         for (int j = 0; j < dInputs[i].size(); j++) {

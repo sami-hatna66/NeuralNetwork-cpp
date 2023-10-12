@@ -14,6 +14,9 @@
 #include "utils.hpp"
 
 int main() {
+    Vec2d<double> test = std::vector<std::vector<double>>({{1,2,3},{4,5,6}});
+    Vec2d<double> test2 = std::vector<std::vector<double>>({{1,2},{3,4},{5,6}});
+
     Model<double, Accuracy::CategoricalAccuracy, Optimizers::Adam,
           Loss::CategoricalCrossEntropy>
         m;

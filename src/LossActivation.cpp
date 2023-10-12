@@ -17,8 +17,9 @@ void SoftmaxCCE<T>::backward(Vec2d<T> dValues, Vec2d<T> actualY) {
 
     Vec2d<T> maxIdxs;
     if (actualY.size() > 1) {
-        maxIdxs.push_back({});
-        for (const auto &row : actualY) {
+        std::vector<T> contents;
+        for (int i = 0; i < actualY.getRows(); i++) {
+            const auto& row = actualY[i];
             T maxVal = row[0];
             T maxIdx = 0;
             for (int i = 1; i < row.size(); i++) {
@@ -27,8 +28,9 @@ void SoftmaxCCE<T>::backward(Vec2d<T> dValues, Vec2d<T> actualY) {
                     maxIdx = i;
                 }
             }
-            maxIdxs[0].push_back(maxIdx);
+            contents.push_back(maxIdx);
         }
+        maxIdxs = {contents};
     } else {
         maxIdxs = actualY;
     }
