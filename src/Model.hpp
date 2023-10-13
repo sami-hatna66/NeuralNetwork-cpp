@@ -27,13 +27,13 @@ class Model {
   public:
     Model();
     template <typename Derived> void addLayer(std::shared_ptr<Derived> layer);
-    void setOptimizer(OptimizerType<T>& pOptimizer);
-    void setAccuracy(AccuracyType<T>& pAccuracy);
-    void setLoss(LossType<T>& pLoss);
+    void setOptimizer(OptimizerType<T> &pOptimizer);
+    void setAccuracy(AccuracyType<T> &pAccuracy);
+    void setLoss(LossType<T> &pLoss);
     void prepare();
-    void train(Vec2d<T>& X, Vec2d<T>& y, int epochs = 1);
-    Vec2d<T> compute(Vec2d<T>& X, LayerMode mode);
-    void backward(Vec2d<T>& output, Vec2d<T>& actualY);
+    void train(Vec2d<T> &X, Vec2d<T> &y, int epochs = 1);
+    Vec2d<T> compute(Vec2d<T> &X, LayerMode mode);
+    void backward(Vec2d<T> &output, Vec2d<T> &actualY);
 };
 
 #endif

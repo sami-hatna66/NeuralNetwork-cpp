@@ -27,8 +27,8 @@ int main() {
     Loss::CategoricalCrossEntropy<double> loss;
     m.setLoss(loss);
 
-    auto l1 = std::make_shared<Layers::DenseLayer<double>>(0, 2, 512, 0, 0.0005,
-                                                           0, 0.0005);
+    auto l1 = std::make_shared<Layers::DenseLayer<double>>(2, 512, 0, 0.0005, 0,
+                                                           0.0005);
     m.addLayer(l1);
 
     auto a1 = std::make_shared<Activations::Relu<double>>();
@@ -37,7 +37,7 @@ int main() {
     auto l2 = std::make_shared<Layers::DropoutLayer<double>>(0.1);
     m.addLayer(l2);
 
-    auto l3 = std::make_shared<Layers::DenseLayer<double>>(1, 512, 3);
+    auto l3 = std::make_shared<Layers::DenseLayer<double>>(512, 3);
     m.addLayer(l3);
 
     auto a2 = std::make_shared<Activations::Softmax<double>>();
@@ -45,7 +45,7 @@ int main() {
 
     m.prepare();
 
-    m.train(spiralDataX, spiralDataY, 1000);
+    m.train(spiralDataX, spiralDataY, 100);
 
     return 0;
 }

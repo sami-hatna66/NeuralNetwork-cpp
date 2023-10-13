@@ -33,9 +33,6 @@ template <typename T> class DenseLayer : public ModelLayer<T> {
     using ModelLayer<T>::isTrainable;
 
   public:
-    DenseLayer(int num, int numInputs, int numNeurons,
-               T pWeightRegularizerL1 = 0, T pWeightRegularizerL2 = 0,
-               T pBiasRegularizerL1 = 0, T pBiasRegularizerL2 = 0);
     DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1 = 0,
                T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
                T pBiasRegularizerL2 = 0);
@@ -68,6 +65,10 @@ template <typename T> class DropoutLayer : public ModelLayer<T> {
   private:
     Vec2d<T> mask;
     T rate;
+
+    std::random_device rd;
+    std::mt19937 gen;
+    std::binomial_distribution<int> distr;
 
     using ModelLayer<T>::inputs;
     using ModelLayer<T>::output;

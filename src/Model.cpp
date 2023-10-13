@@ -18,7 +18,7 @@ template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
 void Model<T, AccuracyType, OptimizerType, LossType>::setOptimizer(
-    OptimizerType<T>& pOptimizer) {
+    OptimizerType<T> &pOptimizer) {
     optimizer = pOptimizer;
 }
 
@@ -26,7 +26,7 @@ template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
 void Model<T, AccuracyType, OptimizerType, LossType>::setAccuracy(
-    AccuracyType<T>& pAccuracy) {
+    AccuracyType<T> &pAccuracy) {
     accuracy = pAccuracy;
 }
 
@@ -34,7 +34,7 @@ template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
 void Model<T, AccuracyType, OptimizerType, LossType>::setLoss(
-    LossType<T>& pLoss) {
+    LossType<T> &pLoss) {
     loss = pLoss;
 }
 
@@ -55,8 +55,8 @@ void Model<T, AccuracyType, OptimizerType, LossType>::prepare() {
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
-void Model<T, AccuracyType, OptimizerType, LossType>::train(Vec2d<T>& X,
-                                                            Vec2d<T>& y,
+void Model<T, AccuracyType, OptimizerType, LossType>::train(Vec2d<T> &X,
+                                                            Vec2d<T> &y,
                                                             int epochs) {
     auto startTime = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < epochs; i++) {
@@ -109,7 +109,7 @@ template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
 Vec2d<T>
-Model<T, AccuracyType, OptimizerType, LossType>::compute(Vec2d<T>& X,
+Model<T, AccuracyType, OptimizerType, LossType>::compute(Vec2d<T> &X,
                                                          LayerMode mode) {
     layers[0]->compute(X, mode);
     for (int i = 1; i < layers.size(); i++) {
@@ -123,7 +123,7 @@ template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
 void Model<T, AccuracyType, OptimizerType, LossType>::backward(
-    Vec2d<T>& output, Vec2d<T>& actualY) {
+    Vec2d<T> &output, Vec2d<T> &actualY) {
     if (useLossAcc) {
         lossAcc.backward(output, actualY);
         if (layers.size() > 1) {
