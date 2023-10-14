@@ -108,6 +108,20 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(Vec2d<T> &X,
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
+void Model<T, AccuracyType, OptimizerType, LossType>::train(
+    Vec2d<T> &X, Vec2d<T> &y, Vec2d<T> &testX, Vec2d<T> &testY, int epochs) {
+    train(X, y, epochs);
+    auto output = compute(testX, LayerMode::Eval);
+
+    auto predictions = layers[layers.size() - 1]->predict(output);
+    auto calcAccuracy = accuracy.calculate(predictions, testY);
+
+    std::cout << "validation, accuracy: " << calcAccuracy << std::endl;
+}
+
+template <typename T, template <typename> class AccuracyType,
+          template <typename> class OptimizerType,
+          template <typename> class LossType>
 Vec2d<T>
 Model<T, AccuracyType, OptimizerType, LossType>::compute(Vec2d<T> &X,
                                                          LayerMode mode) {

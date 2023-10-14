@@ -32,6 +32,8 @@ class Model {
     void setLoss(LossType<T> &pLoss);
     void prepare();
     void train(Vec2d<T> &X, Vec2d<T> &y, int epochs = 1);
+    void train(Vec2d<T> &X, Vec2d<T> &y, Vec2d<T> &testX, Vec2d<T> &testY,
+               int epochs = 1);
     Vec2d<T> compute(Vec2d<T> &X, LayerMode mode);
     void backward(Vec2d<T> &output, Vec2d<T> &actualY);
 };

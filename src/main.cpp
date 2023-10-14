@@ -45,7 +45,7 @@ int main() {
 
     m.prepare();
 
-    m.train(spiralDataX, spiralDataY, 100);
+    m.train(spiralDataX, spiralDataY, spiralDataTestX, spiralDataTestY, 1000);
 
     return 0;
 }

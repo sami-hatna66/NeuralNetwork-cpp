@@ -66,8 +66,8 @@ std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T> &predictY,
     int numSamples = predictY.size();
 
     // Trim data, prevents zero division
-    T lowerLimit = 0.0000001;
-    T upperLimit = 0.9999999;
+    T lowerLimit = 1.0E-7;
+    T upperLimit = 1.0 - 1.0E-7;
 
     for (int i = 0; i < predictY.size(); i++) {
         for (int j = 0; j < predictY[i].size(); j++) {
@@ -99,6 +99,7 @@ std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T> &predictY,
         assert(pickedConfidences[i] != (T)0);
         pickedConfidences[i] = -std::log(pickedConfidences[i]);
     }
+
     return pickedConfidences;
 }
 
