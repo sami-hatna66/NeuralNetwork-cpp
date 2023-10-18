@@ -4,7 +4,23 @@ namespace Accuracy {
 
 template <typename T>
 T AccuracyBase<T>::calculate(Vec2d<T> &predictions, Vec2d<T> &actualY) {
+    auto comparisons = predict(predictions, actualY);
+    auto accuracy = mean(comparisons);
+
+    accumulatedSum += std::accumulate(
+        comparisons[0].begin(), comparisons[0].end(), 0.0, std::plus<T>());
+    accumulatedCount += comparisons[0].size();
+
     return mean(predict(predictions, actualY));
+}
+
+template <typename T> T AccuracyBase<T>::calculateAccumulatedAcc() {
+    return accumulatedSum / accumulatedCount;
+}
+
+template <typename T> void AccuracyBase<T>::newPass() {
+    accumulatedSum = 0;
+    accumulatedCount = 0;
 }
 
 template <typename T>

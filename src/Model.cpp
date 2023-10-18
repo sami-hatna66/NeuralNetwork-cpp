@@ -55,68 +55,133 @@ void Model<T, AccuracyType, OptimizerType, LossType>::prepare() {
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
-void Model<T, AccuracyType, OptimizerType, LossType>::train(Vec2d<T> &X,
-                                                            Vec2d<T> &y,
-                                                            int epochs) {
+void Model<T, AccuracyType, OptimizerType, LossType>::train(std::unique_ptr<Vec2d<T>> X,
+                                                            std::unique_ptr<Vec2d<T>> y,
+                                                            std::unique_ptr<Vec2d<T>> testX,
+                                                            std::unique_ptr<Vec2d<T>> testY,
+                                                            int epochs,
+                                                            int batchSize) {
     auto startTime = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < epochs; i++) {
-        auto output = compute(X, LayerMode::Training);
 
-        auto dataLoss = loss.calculate(output, y);
-        T regLoss = 0;
-        for (auto layer : layers) {
-            if (layer->getIsTrainable()) {
-                regLoss += loss.calculateRegLoss(
-                    *std::static_pointer_cast<Layers::DenseLayer<T>>(layer));
+    int numSteps = 1;
+    if (batchSize != 0) {
+        // Ceiling divide
+        numSteps = (X->size() + batchSize - 1) / batchSize;
+    }
+
+    for (int epoch = 0; epoch < epochs; epoch++) {
+        std::cout << "Epoch: " << epoch << std::endl;
+
+        loss.newPass();
+        accuracy.newPass();
+
+        for (int step = 0; step < numSteps; step++) {
+            Vec2d<T> batchX;
+            Vec2d<T> batchY;
+            if (batchSize == 0) {
+                batchX = Vec2d<T>(*X);
+                batchY = Vec2d<T>(*y);
+            } else {
+                int startRow = step * batchSize;
+                int endRow = (step + 1) * batchSize;
+                if (endRow > X->size()) endRow = X->size();
+                for (int i = startRow; i < endRow; i++) {
+                    batchX.push_back(std::vector<T>((*X)[i].begin(), (*X)[i].end()));
+                }
+                batchY.push_back(std::vector<T>((*y)[0].begin() + startRow,
+                                                (*y)[0].begin() + endRow));
+            }
+
+            auto output = compute(batchX, LayerMode::Training);
+
+            auto dataLoss = loss.calculate(output, batchY);
+            T regLoss = 0;
+            for (auto layer : layers) {
+                if (layer->getIsTrainable()) {
+                    regLoss += loss.calculateRegLoss(
+                        *std::static_pointer_cast<Layers::DenseLayer<T>>(
+                            layer));
+                }
+            }
+            auto lossVal = dataLoss + regLoss;
+
+            auto predictions = layers[layers.size() - 1]->predict(output);
+            auto calcAccuracy = accuracy.calculate(predictions, batchY);
+
+            backward(output, batchY);
+
+            optimizer.setup();
+            for (auto layer : layers) {
+                if (layer->getIsTrainable()) {
+                    optimizer.updateParams(
+                        *std::static_pointer_cast<Layers::DenseLayer<T>>(
+                            layer));
+                }
+            }
+            optimizer.finalize();
+
+            if (step % 100 == 0 || step == numSteps - 1) {
+                auto endTime = std::chrono::high_resolution_clock::now();
+                std::cout
+                    << "step: " << step << std::fixed << std::setprecision(3)
+                    << ", accuracy: " << calcAccuracy << std::fixed
+                    << std::fixed << std::setprecision(3)
+                    << ", loss: " << lossVal << " (data loss: " << dataLoss
+                    << ", reg loss: " << regLoss << ")" << std::fixed
+                    << std::setprecision(3)
+                    << ", lr: " << optimizer.getCurrentLearningRate()
+                    << ", time: "
+                    << std::chrono::duration_cast<std::chrono::milliseconds>(
+                           endTime - startTime)
+                           .count()
+                    << " ms" << std::endl;
+                startTime = std::chrono::high_resolution_clock::now();
             }
         }
-        auto lossVal = dataLoss + regLoss;
 
-        auto predictions = layers[layers.size() - 1]->predict(output);
-        auto calcAccuracy = accuracy.calculate(predictions, y);
+        auto epochLoss = loss.calculateAccumulatedLoss();
+        auto epochAccuracy = accuracy.calculateAccumulatedAcc();
 
-        backward(output, y);
+        std::cout << "training, acc: " << epochAccuracy << ", loss: " << epochLoss << std::endl;
 
-        optimizer.setup();
-        for (auto layer : layers) {
-            if (layer->getIsTrainable()) {
-                optimizer.updateParams(
-                    *std::static_pointer_cast<Layers::DenseLayer<T>>(layer));
+        if (testX != nullptr && testY != nullptr) {
+            loss.newPass();
+            accuracy.newPass();
+
+            int valSteps = 1;
+            if (batchSize != 0) {
+                // Ceiling divide
+                valSteps = (testX->size() + batchSize - 1) / batchSize;
             }
-        }
-        optimizer.finalize();
 
-        if (i % 100 == 0) {
-            auto endTime = std::chrono::high_resolution_clock::now();
-            std::cout << "epoch: " << i << std::fixed << std::setprecision(3)
-                      << ", accuracy: " << calcAccuracy << std::fixed
-                      << std::fixed << std::setprecision(3)
-                      << ", loss: " << lossVal << " (data loss: " << dataLoss
-                      << ", reg loss: " << regLoss << ")" << std::fixed
-                      << std::setprecision(3)
-                      << ", lr: " << optimizer.getCurrentLearningRate()
-                      << ", time: "
-                      << std::chrono::duration_cast<std::chrono::milliseconds>(
-                             endTime - startTime)
-                             .count()
-                      << " ms" << std::endl;
-            startTime = std::chrono::high_resolution_clock::now();
+            for (int step = 0; step < valSteps; step++) {
+                Vec2d<T> batchTestX;
+                Vec2d<T> batchTestY;
+                if (batchSize == 0) {
+                    batchTestX = Vec2d<T>(*testX);
+                    batchTestY = Vec2d<T>(*testY);
+                } else {
+                    int startRow = step * batchSize;
+                    int endRow = (step + 1) * batchSize;
+                    if (endRow > testX->size()) endRow = testX->size();
+                    for (int i = startRow; i < endRow; i++) {
+                        batchTestX.push_back(std::vector<T>((*testX)[i].begin(), (*testX)[i].end()));
+                    }
+                    batchTestY.push_back(std::vector<T>((*testY)[0].begin() + startRow,
+                                                        (*testY)[0].begin() + endRow));
+                }
+
+                auto output = compute(batchTestX, LayerMode::Eval);
+
+                auto predictions = layers[layers.size() - 1]->predict(output);
+                auto calcAccuracy = accuracy.calculate(predictions, batchTestY);
+            }
+
+            auto valAccuracy = accuracy.calculateAccumulatedAcc();
+
+            std::cout << "validation, acc: " << valAccuracy << std::endl;
         }
     }
-}
-
-template <typename T, template <typename> class AccuracyType,
-          template <typename> class OptimizerType,
-          template <typename> class LossType>
-void Model<T, AccuracyType, OptimizerType, LossType>::train(
-    Vec2d<T> &X, Vec2d<T> &y, Vec2d<T> &testX, Vec2d<T> &testY, int epochs) {
-    train(X, y, epochs);
-    auto output = compute(testX, LayerMode::Eval);
-
-    auto predictions = layers[layers.size() - 1]->predict(output);
-    auto calcAccuracy = accuracy.calculate(predictions, testY);
-
-    std::cout << "validation, accuracy: " << calcAccuracy << std::endl;
 }
 
 template <typename T, template <typename> class AccuracyType,

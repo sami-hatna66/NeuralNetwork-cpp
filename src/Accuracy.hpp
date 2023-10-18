@@ -6,9 +6,15 @@
 namespace Accuracy {
 
 template <typename T> class AccuracyBase {
+  private:
+    T accumulatedSum;
+    int accumulatedCount;
+
   public:
     T calculate(Vec2d<T> &predictions, Vec2d<T> &actualY);
     virtual Vec2d<T> predict(Vec2d<T> &predictions, Vec2d<T> &actualY) = 0;
+    T calculateAccumulatedAcc();
+    void newPass();
 };
 
 template <typename T> class CategoricalAccuracy : public AccuracyBase<T> {

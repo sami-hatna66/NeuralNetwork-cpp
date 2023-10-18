@@ -11,11 +11,15 @@ namespace Loss {
 template <typename T> class LossBase {
   protected:
     Vec2d<T> dInputs;
+    T accumulatedLoss;
+    int accumulatedCount;
 
   public:
     LossBase() {}
     T calculate(Vec2d<T> &output, Vec2d<T> &y);
     T calculateRegLoss(Layers::DenseLayer<T> &layer);
+    T calculateAccumulatedLoss();
+    void newPass();
     Vec2d<T> getDInputs();
 
     virtual std::vector<T> compute(Vec2d<T> &predictY, Vec2d<T> &actualY) = 0;

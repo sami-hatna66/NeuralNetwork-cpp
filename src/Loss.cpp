@@ -8,7 +8,21 @@ template <typename T> T LossBase<T>::calculate(Vec2d<T> &output, Vec2d<T> &y) {
     T dataLoss = std::accumulate(sampleLosses.begin(), sampleLosses.end(), 0.0,
                                  std::plus<T>()) /
                  sampleLosses.size();
+
+    accumulatedLoss += std::accumulate(sampleLosses.begin(), sampleLosses.end(),
+                                       0.0, std::plus<T>());
+    accumulatedCount += sampleLosses.size();
+
     return dataLoss;
+}
+
+template <typename T> T LossBase<T>::calculateAccumulatedLoss() {
+    return accumulatedLoss / accumulatedCount;
+}
+
+template <typename T> void LossBase<T>::newPass() {
+    accumulatedLoss = 0;
+    accumulatedCount = 0;
 }
 
 template <typename T>

@@ -31,9 +31,9 @@ class Model {
     void setAccuracy(AccuracyType<T> &pAccuracy);
     void setLoss(LossType<T> &pLoss);
     void prepare();
-    void train(Vec2d<T> &X, Vec2d<T> &y, int epochs = 1);
-    void train(Vec2d<T> &X, Vec2d<T> &y, Vec2d<T> &testX, Vec2d<T> &testY,
-               int epochs = 1);
+    void train(std::unique_ptr<Vec2d<T>> X, std::unique_ptr<Vec2d<T>>y,
+        std::unique_ptr<Vec2d<T>> testX, std::unique_ptr<Vec2d<T>> testY, 
+        int epochs = 1, int batchSize = 0);
     Vec2d<T> compute(Vec2d<T> &X, LayerMode mode);
     void backward(Vec2d<T> &output, Vec2d<T> &actualY);
 };

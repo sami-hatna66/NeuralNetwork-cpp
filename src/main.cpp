@@ -2,6 +2,9 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <filesystem>
+
+#include <opencv2/opencv.hpp>
 
 #include "Accuracy.hpp"
 #include "Activations.hpp"
@@ -14,6 +17,7 @@
 #include "utils.hpp"
 
 int main() {
+
     Model<double, Accuracy::CategoricalAccuracy, Optimizers::Adam,
           Loss::CategoricalCrossEntropy>
         m;
@@ -45,7 +49,11 @@ int main() {
 
     m.prepare();
 
-    m.train(spiralDataX, spiralDataY, spiralDataTestX, spiralDataTestY, 1000);
+    m.train(std::make_unique<Vec2d<double>>(spiralDataX), 
+            std::make_unique<Vec2d<double>>(spiralDataY), 
+            std::make_unique<Vec2d<double>>(spiralDataTestX), 
+            std::make_unique<Vec2d<double>>(spiralDataTestY), 
+            10, 128);
 
     return 0;
 }

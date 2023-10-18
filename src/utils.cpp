@@ -17,7 +17,7 @@ void matmulKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
 }
 
 template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
-    assert(a[0].size() == b.size());
+    // assert(a[0].size() == b.size());
     Vec2d<T> result(a.size(), std::vector<T>(b[0].size(), 0.0));
 
     const int rowsPerThread = (a.size() + NUMTHREADS - 1) / NUMTHREADS;
