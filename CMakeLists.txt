@@ -1,12 +1,15 @@
 cmake_minimum_required (VERSION 3.21.0)
 
-# set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
+set(CMAKE_BUILD_TYPE Release)
+# set(CMAKE_BUILD_TYPE RelWithDebInfo)
 # set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_STANDARD 20)
 
 project(nnfs-project)
+
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
 
@@ -31,6 +34,8 @@ add_executable(nnfs
     src/ModelLayer.cpp
     src/main.cpp 
 )
+
+target_link_libraries(nnfs ${OpenCV_LIBS}) 
 
 # find_package(Boost REQUIRED)
 

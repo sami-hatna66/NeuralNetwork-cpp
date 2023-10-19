@@ -174,12 +174,15 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(std::unique_ptr<Vec2
                 auto output = compute(batchTestX, LayerMode::Eval);
 
                 auto predictions = layers[layers.size() - 1]->predict(output);
-                auto calcAccuracy = accuracy.calculate(predictions, batchTestY);
+                accuracy.calculate(predictions, batchTestY);
+
+                loss.calculate(output, batchTestY);
             }
 
             auto valAccuracy = accuracy.calculateAccumulatedAcc();
-
-            std::cout << "validation, acc: " << valAccuracy << std::endl;
+            auto valLoss = loss.calculateAccumulatedLoss();
+            
+            std::cout << "validation, acc: " << valAccuracy << ", loss: " << valLoss << std::endl;
         }
     }
 }
@@ -218,6 +221,38 @@ void Model<T, AccuracyType, OptimizerType, LossType>::backward(
             layers[i]->backward(layers[i + 1]->getDInputs());
         }
     }
+}
+
+template <typename T, template <typename> class AccuracyType,
+          template <typename> class OptimizerType,
+          template <typename> class LossType>
+Vec2d<T> Model<T, AccuracyType, OptimizerType, LossType>::predict(Vec2d<T>& inp, int batchSize) {
+    int predictionSteps = 1;
+    if (batchSize != 0) {
+        predictionSteps = (inp.size() + batchSize - 1) / batchSize;
+    }
+
+    Vec2d<T> output;
+    for (int step = 0; step < predictionSteps; step++) {
+        Vec2d<T> batchPredInp;
+        if (batchSize == 0) {
+            batchPredInp = Vec2d<T>(inp);
+        } else {
+            int startRow = step * batchSize;
+            int endRow = (step + 1) * batchSize;
+            if (endRow > inp.size()) endRow = inp.size();
+            for (int i = startRow; i < endRow; i++) {
+                batchPredInp.push_back(std::vector<T>(inp[i].begin(), inp[i].end()));
+            }
+        }
+
+        auto batchOutput = compute(batchPredInp, LayerMode::Eval);
+        for (auto& row : batchOutput) {
+            output.push_back(row);
+        }
+    }
+
+    return layers[layers.size() - 1]->predict(output);
 }
 
 // explicit instantiations

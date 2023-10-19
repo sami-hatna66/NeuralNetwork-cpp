@@ -36,6 +36,7 @@ class Model {
         int epochs = 1, int batchSize = 0);
     Vec2d<T> compute(Vec2d<T> &X, LayerMode mode);
     void backward(Vec2d<T> &output, Vec2d<T> &actualY);
+    Vec2d<T> predict(Vec2d<T>& inp, int batchSize = 0);
 };
 
 #endif
