@@ -27,7 +27,9 @@ class Model {
     Vec2d<T> compute(Vec2d<T> &X, LayerMode mode);
     void backward(Vec2d<T> &output, Vec2d<T> &actualY);
 
-    std::pair<Vec2d<T>, Vec2d<T>> sliceDataset(std::unique_ptr<Vec2d<T>>& X, std::unique_ptr<Vec2d<T>>& y, int batchSize, int step);
+    std::pair<Vec2d<T>, Vec2d<T>> sliceDataset(std::unique_ptr<Vec2d<T>> &X,
+                                               std::unique_ptr<Vec2d<T>> &y,
+                                               int batchSize, int step);
 
   public:
     Model();

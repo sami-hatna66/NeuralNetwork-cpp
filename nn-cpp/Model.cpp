@@ -55,7 +55,10 @@ void Model<T, AccuracyType, OptimizerType, LossType>::prepare() {
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
-std::pair<Vec2d<T>, Vec2d<T>> Model<T, AccuracyType, OptimizerType, LossType>::sliceDataset(std::unique_ptr<Vec2d<T>>& X, std::unique_ptr<Vec2d<T>>& y, int batchSize, int step) {
+std::pair<Vec2d<T>, Vec2d<T>>
+Model<T, AccuracyType, OptimizerType, LossType>::sliceDataset(
+    std::unique_ptr<Vec2d<T>> &X, std::unique_ptr<Vec2d<T>> &y, int batchSize,
+    int step) {
     Vec2d<T> batchX;
     Vec2d<T> batchY;
     if (batchSize == 0) {
@@ -67,8 +70,7 @@ std::pair<Vec2d<T>, Vec2d<T>> Model<T, AccuracyType, OptimizerType, LossType>::s
         if (endRow > X->size())
             endRow = X->size();
         for (int i = startRow; i < endRow; i++) {
-            batchX.push_back(
-                std::vector<T>((*X)[i].begin(), (*X)[i].end()));
+            batchX.push_back(std::vector<T>((*X)[i].begin(), (*X)[i].end()));
         }
         batchY.push_back(std::vector<T>((*y)[0].begin() + startRow,
                                         (*y)[0].begin() + endRow));
@@ -162,7 +164,8 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
             }
 
             for (int step = 0; step < valSteps; step++) {
-                auto [batchTestX, batchTestY] = sliceDataset(testX, testY, batchSize, step);
+                auto [batchTestX, batchTestY] =
+                    sliceDataset(testX, testY, batchSize, step);
 
                 auto output = compute(batchTestX, LayerMode::Eval);
 

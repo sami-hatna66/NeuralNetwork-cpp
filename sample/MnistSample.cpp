@@ -6,15 +6,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "Accuracy.hpp"
-#include "Activations.hpp"
-#include "Layer.hpp"
-#include "Loss.hpp"
-#include "LossActivation.hpp"
 #include "Model.hpp"
-#include "Optimizers.hpp"
-#include "TestData.hpp"
-#include "utils.hpp"
 
 std::pair<Vec2d<double>, Vec2d<double>>
 loadMnist(const std::string &datasetPath, const std::string &&subdataset) {
