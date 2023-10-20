@@ -8,6 +8,11 @@
 
 #include "Model.hpp"
 
+/**
+ * Load Mnist images into multidimensional vector
+ * Each image's grayscale pixel values comprise a sample/row of X
+ * y contains the correct label for each row of X
+*/
 std::pair<Vec2d<double>, Vec2d<double>>
 loadMnist(const std::string &datasetPath, const std::string &&subdataset) {
     Vec2d<double> X;
@@ -30,7 +35,6 @@ loadMnist(const std::string &datasetPath, const std::string &&subdataset) {
             }
         }
     }
-
     return {X, y};
 }
 

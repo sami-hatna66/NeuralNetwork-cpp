@@ -46,12 +46,14 @@ void Model<T, AccuracyType, OptimizerType, LossType>::prepare() {
     layers.insert(layers.begin(),
                   std::static_pointer_cast<ModelLayer<T>>(inputLayer));
 
+    // If final two layers are Softmax then CCE, use faster SoftmaxCCE object
     if (std::dynamic_pointer_cast<Activations::Softmax<T>>(layers.back()) &&
         std::is_same_v<LossType<T>, Loss::CategoricalCrossEntropy<T>>) {
         useLossAcc = true;
     }
 }
 
+// Helper function for extracting batch at step from dataset
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
@@ -105,7 +107,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
 
             auto dataLoss = loss.calculate(output, batchY);
             T regLoss = 0;
-            for (auto layer : layers) {
+            for (auto& layer : layers) {
                 if (layer->getIsTrainable()) {
                     regLoss += loss.calculateRegLoss(
                         *std::static_pointer_cast<Layers::DenseLayer<T>>(
@@ -120,7 +122,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
             backward(output, batchY);
 
             optimizer.setup();
-            for (auto layer : layers) {
+            for (auto& layer : layers) {
                 if (layer->getIsTrainable()) {
                     optimizer.updateParams(
                         *std::static_pointer_cast<Layers::DenseLayer<T>>(
@@ -154,6 +156,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
         std::cout << "training, acc: " << epochAccuracy
                   << ", loss: " << epochLoss << std::endl;
 
+        // Perform validation if validation data is provided
         if (testX != nullptr && testY != nullptr) {
             loss.newPass();
             accuracy.newPass();
@@ -212,6 +215,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::backward(
             }
         }
     } else {
+        // Iterate through layers in reverse order, using the gradients of the succceeding layer to inform backpropagation of the current layer
         loss.backward(output, actualY);
         layers[layers.size() - 1]->backward(loss.getDInputs());
         for (int i = layers.size() - 2; i >= 0; i--) {
@@ -220,6 +224,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::backward(
     }
 }
 
+// Run inference on trained model
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>

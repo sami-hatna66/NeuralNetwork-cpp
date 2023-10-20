@@ -5,14 +5,14 @@ namespace LossActivation {
 template <typename T> SoftmaxCCE<T>::SoftmaxCCE() : loss{}, activation{} {}
 
 template <typename T>
-T SoftmaxCCE<T>::compute(Vec2d<T> inputs, Vec2d<T> actualY) {
+T SoftmaxCCE<T>::compute(Vec2d<T>& inputs, Vec2d<T>& actualY) {
     activation.compute(inputs);
     output = activation.getOutput();
     return loss.calculate(output, actualY);
 }
 
 template <typename T>
-void SoftmaxCCE<T>::backward(Vec2d<T> dValues, Vec2d<T> actualY) {
+void SoftmaxCCE<T>::backward(Vec2d<T>& dValues, Vec2d<T>& actualY) {
     int numSamples = dValues.size();
 
     Vec2d<T> maxIdxs;

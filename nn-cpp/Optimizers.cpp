@@ -9,6 +9,7 @@ OptimizerBase<T>::OptimizerBase(T pLearningRate, T pDecay)
 
 template <typename T> void OptimizerBase<T>::setup() {
     if (decay != 0) {
+        // Exponential decaying
         currentLearningRate = learningRate * (1.0 / (1.0 + decay * iterations));
     }
 }
@@ -48,6 +49,7 @@ template <typename T>
 Adagrad<T>::Adagrad(T pLearningRate, T pDecay, T pEpsilon)
     : epsilon{pEpsilon}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
+// Adapts learning rate for each parameter based on historical gradients (stored in layer caches)
 template <typename T>
 void Adagrad<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache(layer.getWeightCache() +
@@ -67,6 +69,7 @@ template <typename T>
 RMSprop<T>::RMSprop(T pLearningRate, T pDecay, T pEpsilon, T pRho)
     : epsilon{pEpsilon}, rho{pRho}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
+// RMSprop uses a more sophisticated method than Adagrad for adapting learning rates. Helps prevent aggressive lr decay
 template <typename T>
 void RMSprop<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache((rho * layer.getWeightCache()) +
@@ -87,12 +90,14 @@ Adam<T>::Adam(T pLearningRate, T pDecay, T pEpsilon, T pBeta1, T pBeta2)
     : epsilon{pEpsilon}, beta1{pBeta1}, beta2{pBeta2},
       OptimizerBase<T>{pLearningRate, pDecay} {}
 
+// RMSprop + momentums
 template <typename T> void Adam<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightMomentums(beta1 * layer.getWeightMomentums() +
                              (1 - beta1) * layer.getDWeights());
     layer.setBiasMomentums(beta1 * layer.getBiasMomentums() +
                            (1 - beta1) * layer.getDBiases());
 
+    // Bias correction compensates for the fact that iterations starts as 0
     Vec2d<T> correctedWeightMomentums =
         layer.getWeightMomentums() / (1 - std::pow(beta1, iterations + 1));
     Vec2d<T> correctedBiasMomentums =
@@ -103,6 +108,7 @@ template <typename T> void Adam<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setBiasCache(beta2 * layer.getBiasCache() +
                        (1 - beta2) * power<T>(layer.getDBiases(), 2.0));
 
+    // Bias correction for cache
     Vec2d<T> correctedWeightCache =
         layer.getWeightCache() / (1 - std::pow(beta2, iterations + 1));
     Vec2d<T> correctedBiasCache =

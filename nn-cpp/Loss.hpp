@@ -35,6 +35,7 @@ template <typename T> class CategoricalCrossEntropy : public LossBase<T> {
     void backward(Vec2d<T> &dValues, Vec2d<T> &actualY) override;
 };
 
+// Used for Binary Logistic Regression networks (ie, classification into two)
 template <typename T> class BinaryCrossEntropy : public LossBase<T> {
   private:
     using LossBase<T>::dInputs;

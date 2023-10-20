@@ -25,7 +25,7 @@ template <typename T> static void printVec(std::vector<T> &inp) {
 
 template <typename T> static void printVec(Vec2d<T> &inp) {
     std::cout << std::setprecision(10);
-    for (auto row : inp) {
+    for (auto& row : inp) {
         for (auto val : row) {
             std::cout << val << ", ";
         }
@@ -36,7 +36,7 @@ template <typename T> static void printVec(Vec2d<T> &inp) {
 
 template <typename T> static void printVec(const Vec2d<T> &inp) {
     std::cout << std::setprecision(10);
-    for (auto row : inp) {
+    for (auto& row : inp) {
         for (auto val : row) {
             std::cout << val << ", ";
         }

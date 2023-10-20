@@ -2,6 +2,8 @@
 
 namespace Activations {
 
+// y = x if x > 0
+//   = 0 if x <= 0
 template <typename T>
 void Relu<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -19,6 +21,7 @@ template <typename T> void Relu<T>::backward(const Vec2d<T> &pValues) {
     dInputs = pValues;
     for (int i = 0; i < dInputs.size(); i++) {
         for (int j = 0; j < dInputs[i].size(); j++) {
+            // f'(max(0, x)) = x if x > 0 or 0 if x <= 0
             dInputs[i][j] = inputs[i][j] <= 0 ? 0 : dInputs[i][j];
         }
     }
@@ -28,6 +31,8 @@ template <typename T> Vec2d<T> Relu<T>::predict(Vec2d<T> &outputs) {
     return outputs;
 }
 
+// S_i,j = e^(z_i,j) / sum_l(e^(z_i,l))
+// Converts output values into probabilities proportional to the relative scale of each value
 template <typename T>
 void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -60,7 +65,6 @@ template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
     Vec2d<T> diagFlat(output[0].size(), std::vector<T>(output[0].size(), 0.0));
     for (int i = 0; i < pValues.size(); i++) {
         auto singleOutput = output[i];
-        // Candidate for optimisation
         Vec2d<T> reshapedSingleOutput;
         for (int j = 0; j < singleOutput.size(); j++) {
             reshapedSingleOutput.push_back({singleOutput[j]});
@@ -78,6 +82,7 @@ template <typename T> void Softmax<T>::backward(const Vec2d<T> &pValues) {
         Vec2d<T> dotSingleOutput =
             reshapedSingleOutput * transpose(reshapedSingleOutput);
 
+        // Jacobian matrix contains all partial derivatives of input function
         Vec2d<T> jacobian = diagFlat - dotSingleOutput;
 
         std::vector<T> newRow(jacobian.size(), 0.0);
@@ -100,6 +105,9 @@ template <typename T> Vec2d<T> Softmax<T>::predict(Vec2d<T> &outputs) {
     return pred;
 }
 
+// y = 1 / 1 + e^-x
+// Transforms inputs into a value between 0 and 1
+// Suited to networks which output a binary classification
 template <typename T>
 void Sigmoid<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
@@ -121,6 +129,7 @@ template <typename T> Vec2d<T> Sigmoid<T>::predict(Vec2d<T> &outputs) {
     return pred;
 }
 
+// y = x
 template <typename T>
 void Linear<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;

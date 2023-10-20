@@ -13,6 +13,8 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
     std::random_device rd{};
     std::mt19937 gen{rd()};
     std::normal_distribution<T> distr(0.0, 1.0);
+    // Each neuron is connected to every neuron of the next layer
+    // Every connection has an associated weight
     weights.resize(numInputs, std::vector<T>(numNeurons));
     for (int i = 0; i < numInputs; i++) {
         for (int j = 0; j < numNeurons; j++) {
@@ -22,6 +24,7 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
         weightCache.push_back(weightMomentums[i]);
     }
 
+    // One bias per neuron, initialised as 0
     biases.push_back(std::vector<T>(numNeurons, 0.0));
     biasMomentums.push_back(biases[0]);
     biasCache.push_back(biases[0]);
@@ -33,6 +36,7 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
 template <typename T>
 void DenseLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
+    // output = (input * weights) + biases
     output = inputs * weights;
     for (int i = 0; i < output.size(); i++) {
         for (int j = 0; j < biases[0].size(); j++) {
@@ -79,6 +83,7 @@ template <typename T> void DenseLayer<T>::backward(const Vec2d<T> &dValues) {
         dBiases = dBiases + (2 * biasRegularizerL2 * biases);
     }
 
+    // dInputs is the gradient - a vector of all the partial derivatives of the function
     dInputs = dValues * transpose(weights);
 }
 
@@ -153,6 +158,7 @@ void DenseLayer<T>::setBiasCache(const Vec2d<T> &newBiasCache) {
     biasCache = newBiasCache;
 }
 
+// Disables some neurons with p(1.0 - rate)
 template <typename T>
 DropoutLayer<T>::DropoutLayer(T pRate)
     : rate{(T)1.0 - pRate}, gen(rd()), distr(1, rate), ModelLayer<T>{} {}
@@ -161,6 +167,7 @@ template <typename T>
 void DropoutLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
 
+    // Dropout only has an effect during training, not inference
     if (mode == LayerMode::Eval) {
         output = inputs;
     } else {

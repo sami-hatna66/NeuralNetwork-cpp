@@ -32,7 +32,7 @@ Vec2d<T> CategoricalAccuracy<T>::predict(Vec2d<T> &predictions,
                                          Vec2d<T> &actualY) {
     Vec2d<T> adjY = {{}};
     if (!isBinary && actualY.size() > 1) {
-        for (auto row : actualY) {
+        for (auto& row : actualY) {
             auto maxIter = std::max_element(row.begin(), row.end());
             adjY[0].push_back(std::distance(row.begin(), maxIter));
         }

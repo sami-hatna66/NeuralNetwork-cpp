@@ -29,6 +29,9 @@ template <typename T>
 T LossBase<T>::calculateRegLoss(Layers::DenseLayer<T> &layer) {
     T regularizationLoss = 0.0;
 
+    // L1 penalty = sum of absolute values for weights/biases
+    // L2 penalty = sum of squared weights/biases
+
     if (layer.getWeightRegularizerL1() > 0) {
         T weightSum = 0.0;
         for (int i = 0; i < layer.getWeights().size(); i++) {
@@ -74,6 +77,7 @@ T LossBase<T>::calculateRegLoss(Layers::DenseLayer<T> &layer) {
 
 template <typename T> Vec2d<T> LossBase<T>::getDInputs() { return dInputs; }
 
+// L_i = sum_j(y_i,j * log(predy_i,j))
 template <typename T>
 std::vector<T> CategoricalCrossEntropy<T>::compute(Vec2d<T> &predictY,
                                                    Vec2d<T> &actualY) {
@@ -123,6 +127,7 @@ void CategoricalCrossEntropy<T>::backward(Vec2d<T> &dValues,
     dInputs.clear();
     int numSamples = dValues.size();
     int numLabels = dValues[0].size();
+    // Turn sparse labels into one-hot vectors
     if (actualY.size() == 1) {
         Vec2d<T> oneHot;
         for (int i = 0; i < numSamples; i++) {
@@ -135,6 +140,7 @@ void CategoricalCrossEntropy<T>::backward(Vec2d<T> &dValues,
     for (int i = 0; i < dValues.size(); i++) {
         std::vector<T> newRow;
         for (int j = 0; j < dValues[i].size(); j++) {
+            // Calculate and normalize gradient
             newRow.push_back((-actualY[i][j] / dValues[i][j]) / numSamples);
         }
         dInputs.push_back(newRow);
@@ -195,6 +201,7 @@ void BinaryCrossEntropy<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
     dInputs = dInputs / numSamples;
 }
 
+// Square the difference between the predicted and true values of single outputs and average those squared values
 template <typename T>
 std::vector<T> MeanSquaredError<T>::compute(Vec2d<T> &predictY,
                                             Vec2d<T> &actualY) {
@@ -219,6 +226,7 @@ void MeanSquaredError<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
     dInputs = (((actualY - dValues) * (T)-2.0) / numLabels) / numSamples;
 }
 
+// Take the absolute difference between the predicted and true values in a single output and average those absolute values
 template <typename T>
 std::vector<T> MeanAbsoluteError<T>::compute(Vec2d<T> &predictY,
                                              Vec2d<T> &actualY) {

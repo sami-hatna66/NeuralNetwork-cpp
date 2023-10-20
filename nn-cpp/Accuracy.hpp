@@ -17,6 +17,7 @@ template <typename T> class AccuracyBase {
     void newPass();
 };
 
+// For classification networks
 template <typename T> class CategoricalAccuracy : public AccuracyBase<T> {
   private:
     bool isBinary;
@@ -27,6 +28,7 @@ template <typename T> class CategoricalAccuracy : public AccuracyBase<T> {
     Vec2d<T> predict(Vec2d<T> &predictions, Vec2d<T> &actualY) override;
 };
 
+// For regression networks
 template <typename T> class RegressionAccuracy : public AccuracyBase<T> {
   private:
     T precision;

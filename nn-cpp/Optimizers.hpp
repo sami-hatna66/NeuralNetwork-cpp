@@ -8,8 +8,12 @@ namespace Optimizers {
 
 template <typename T> class OptimizerBase {
   protected:
+    // Learning rate controls the amount that the weights are updated as we seek to minimize the Loss
+    // Small learning rates result in failure to train
+    // Large learning rates make training unstable
     T learningRate;
     T currentLearningRate;
+    // Learning rate decays across iterations to keep initial updates large and then gradually decrease as loss falls into a local minimum
     T decay;
     T iterations;
 
@@ -25,6 +29,8 @@ template <typename T> class OptimizerBase {
 template <typename T>
 class StochasticGradientDescent : public OptimizerBase<T> {
   private:
+    // Momentum creates a rolling average of gradients over n updates
+    // This average is used at each step to better inform our weight updates
     T momentum;
 
     using OptimizerBase<T>::learningRate;
@@ -40,6 +46,7 @@ class StochasticGradientDescent : public OptimizerBase<T> {
 
 template <typename T> class Adagrad : public OptimizerBase<T> {
   private:
+    // Epsilon hyper-parameter prevents 0 division
     T epsilon;
 
     using OptimizerBase<T>::learningRate;
@@ -55,6 +62,7 @@ template <typename T> class Adagrad : public OptimizerBase<T> {
 template <typename T> class RMSprop : public OptimizerBase<T> {
   private:
     T epsilon;
+    // Cache memory decay rate
     T rho;
 
     using OptimizerBase<T>::learningRate;
@@ -71,8 +79,9 @@ template <typename T> class RMSprop : public OptimizerBase<T> {
 template <typename T> class Adam : public OptimizerBase<T> {
   private:
     T epsilon;
-    T beta1;
-    T beta2;
+    // Decay rates for the rolling averages stored in layers weights/momentums
+    T beta1; // momentum
+    T beta2; // cache
 
     using OptimizerBase<T>::learningRate;
     using OptimizerBase<T>::currentLearningRate;

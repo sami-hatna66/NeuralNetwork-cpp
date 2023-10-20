@@ -3,12 +3,17 @@
 
 #include "utils.hpp"
 
+/**
+ * Base class shared by dense, input, dropout and activation layers
+ * Used in Model class as type for vector of pointers to layers
+*/
 template <typename T> class ModelLayer {
   protected:
     Vec2d<T> inputs;
     Vec2d<T> output;
     Vec2d<T> dInputs;
 
+    // Dense layers are trainable (they have weights), whereas activation, input and dropout layers aren't
     bool isTrainable = false;
 
   public:
@@ -20,6 +25,7 @@ template <typename T> class ModelLayer {
     Vec2d<T> &getDInputs();
     void setDInputs(Vec2d<T> &newDInputs);
     bool getIsTrainable();
+    // Only implemented for activation layers
     virtual Vec2d<T> predict(Vec2d<T> &outputs);
 };
 
