@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     m.train(std::make_unique<Vec2d<double>>(xTrain),
             std::make_unique<Vec2d<double>>(yTrain),
             std::make_unique<Vec2d<double>>(xTest),
-            std::make_unique<Vec2d<double>>(yTest), 10, 128);
+            std::make_unique<Vec2d<double>>(yTest), 15, 128);
 
     std::map<int, std::string> labels{
         {0, "T-shirt/Top"}, {1, "Trouser"},    {2, "Pullover"}, {3, "Dress"},
