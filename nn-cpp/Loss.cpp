@@ -201,7 +201,8 @@ void BinaryCrossEntropy<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
     dInputs = dInputs / numSamples;
 }
 
-// Square the difference between the predicted and true values of single outputs and average those squared values
+// Square the difference between the predicted and true values of single outputs
+// and average those squared values
 template <typename T>
 std::vector<T> MeanSquaredError<T>::compute(Vec2d<T> &predictY,
                                             Vec2d<T> &actualY) {
@@ -226,7 +227,8 @@ void MeanSquaredError<T>::backward(Vec2d<T> &dValues, Vec2d<T> &actualY) {
     dInputs = (((actualY - dValues) * (T)-2.0) / numLabels) / numSamples;
 }
 
-// Take the absolute difference between the predicted and true values in a single output and average those absolute values
+// Take the absolute difference between the predicted and true values in a
+// single output and average those absolute values
 template <typename T>
 std::vector<T> MeanAbsoluteError<T>::compute(Vec2d<T> &predictY,
                                              Vec2d<T> &actualY) {

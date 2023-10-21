@@ -83,7 +83,8 @@ template <typename T> void DenseLayer<T>::backward(const Vec2d<T> &dValues) {
         dBiases = dBiases + (2 * biasRegularizerL2 * biases);
     }
 
-    // dInputs is the gradient - a vector of all the partial derivatives of the function
+    // dInputs is the gradient - a vector of all the partial derivatives of the
+    // function
     dInputs = dValues * transpose(weights);
 }
 

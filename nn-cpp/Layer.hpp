@@ -23,7 +23,8 @@ template <typename T> class DenseLayer : public ModelLayer<T> {
     Vec2d<T> weightCache;
     Vec2d<T> biasCache;
 
-    // Regularization used by Loss to penalize models for having large weights and biases (reduces generalization error)
+    // Regularization used by Loss to penalize models for having large weights
+    // and biases (reduces generalization error)
     T weightRegularizerL1;
     T weightRegularizerL2;
     T biasRegularizerL1;

@@ -8,11 +8,9 @@
 
 #include "Model.hpp"
 
-/**
- * Load Mnist images into multidimensional vector
- * Each image's grayscale pixel values comprise a sample/row of X
- * y contains the correct label for each row of X
-*/
+// Load Mnist images into multidimensional vector
+// Each image's grayscale pixel values comprise a sample/row of X
+// y contains the correct label for each row of X (ie image)
 std::pair<Vec2d<double>, Vec2d<double>>
 loadMnist(const std::string &datasetPath, const std::string &&subdataset) {
     Vec2d<double> X;
@@ -61,6 +59,7 @@ int main(int argc, char *argv[]) {
     auto [xTrain, yTrain] = loadMnist(argv[1], "train");
     auto [xTest, yTest] = loadMnist(argv[1], "test");
 
+    // Shuffle training data
     std::random_device r;
     std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
     std::mt19937 xEng(seed);
@@ -68,6 +67,7 @@ int main(int argc, char *argv[]) {
     std::shuffle(xTrain.begin(), xTrain.end(), xEng);
     std::shuffle(yTrain[0].begin(), yTrain[0].end(), yEng);
 
+    // Scale features so they are between -1.0 and 1.0
     xTrain = (xTrain - 127.5) / 127.5;
     xTest = (xTest - 127.5) / 127.5;
 
@@ -116,11 +116,12 @@ int main(int argc, char *argv[]) {
     };
 
     auto testImg = loadImage(argv[2]);
+    // Invert image colours
     testImg = 255.0 - testImg;
     testImg = (testImg - 127.5) / 127.5;
 
-    auto predictions = m.predict(testImg);
-    std::cout << "Classified as: " << labels[predictions[0][0]] << std::endl;
+    auto predictions = m.predict(std::make_unique<Vec2d<double>>(testImg));
+    std::cout << std::endl << "Classified as: " << labels[predictions[0][0]] << std::endl;
 
     return 0;
 }

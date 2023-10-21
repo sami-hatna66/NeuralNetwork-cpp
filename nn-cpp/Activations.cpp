@@ -32,7 +32,8 @@ template <typename T> Vec2d<T> Relu<T>::predict(Vec2d<T> &outputs) {
 }
 
 // S_i,j = e^(z_i,j) / sum_l(e^(z_i,l))
-// Converts output values into probabilities proportional to the relative scale of each value
+// Converts output values into probabilities proportional to the relative scale
+// of each value
 template <typename T>
 void Softmax<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;

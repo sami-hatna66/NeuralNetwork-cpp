@@ -49,7 +49,8 @@ template <typename T>
 Adagrad<T>::Adagrad(T pLearningRate, T pDecay, T pEpsilon)
     : epsilon{pEpsilon}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
-// Adapts learning rate for each parameter based on historical gradients (stored in layer caches)
+// Adapts learning rate for each parameter based on historical gradients (stored
+// in layer caches)
 template <typename T>
 void Adagrad<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache(layer.getWeightCache() +
@@ -69,7 +70,8 @@ template <typename T>
 RMSprop<T>::RMSprop(T pLearningRate, T pDecay, T pEpsilon, T pRho)
     : epsilon{pEpsilon}, rho{pRho}, OptimizerBase<T>{pLearningRate, pDecay} {}
 
-// RMSprop uses a more sophisticated method than Adagrad for adapting learning rates. Helps prevent aggressive lr decay
+// RMSprop uses a more sophisticated method than Adagrad for adapting learning
+// rates. Helps prevent aggressive lr decay
 template <typename T>
 void RMSprop<T>::updateParams(Layers::DenseLayer<T> &layer) {
     layer.setWeightCache((rho * layer.getWeightCache()) +

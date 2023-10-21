@@ -107,7 +107,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
 
             auto dataLoss = loss.calculate(output, batchY);
             T regLoss = 0;
-            for (auto& layer : layers) {
+            for (auto &layer : layers) {
                 if (layer->getIsTrainable()) {
                     regLoss += loss.calculateRegLoss(
                         *std::static_pointer_cast<Layers::DenseLayer<T>>(
@@ -122,7 +122,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
             backward(output, batchY);
 
             optimizer.setup();
-            for (auto& layer : layers) {
+            for (auto &layer : layers) {
                 if (layer->getIsTrainable()) {
                     optimizer.updateParams(
                         *std::static_pointer_cast<Layers::DenseLayer<T>>(
@@ -215,7 +215,8 @@ void Model<T, AccuracyType, OptimizerType, LossType>::backward(
             }
         }
     } else {
-        // Iterate through layers in reverse order, using the gradients of the succceeding layer to inform backpropagation of the current layer
+        // Iterate through layers in reverse order, using the gradients of the
+        // succceeding layer to inform backpropagation of the current layer
         loss.backward(output, actualY);
         layers[layers.size() - 1]->backward(loss.getDInputs());
         for (int i = layers.size() - 2; i >= 0; i--) {
@@ -228,29 +229,18 @@ void Model<T, AccuracyType, OptimizerType, LossType>::backward(
 template <typename T, template <typename> class AccuracyType,
           template <typename> class OptimizerType,
           template <typename> class LossType>
-Vec2d<T>
-Model<T, AccuracyType, OptimizerType, LossType>::predict(Vec2d<T> &inp,
-                                                         int batchSize) {
+Vec2d<T> Model<T, AccuracyType, OptimizerType, LossType>::predict(
+    std::unique_ptr<Vec2d<T>> inp, int batchSize) {
     int predictionSteps = 1;
     if (batchSize != 0) {
-        predictionSteps = (inp.size() + batchSize - 1) / batchSize;
+        predictionSteps = (inp->size() + batchSize - 1) / batchSize;
     }
 
     Vec2d<T> output;
     for (int step = 0; step < predictionSteps; step++) {
-        Vec2d<T> batchPredInp;
-        if (batchSize == 0) {
-            batchPredInp = Vec2d<T>(inp);
-        } else {
-            int startRow = step * batchSize;
-            int endRow = (step + 1) * batchSize;
-            if (endRow > inp.size())
-                endRow = inp.size();
-            for (int i = startRow; i < endRow; i++) {
-                batchPredInp.push_back(
-                    std::vector<T>(inp[i].begin(), inp[i].end()));
-            }
-        }
+        Vec2d<T> dummyY;
+        auto dummyPtr = std::make_unique<Vec2d<T>>(dummyY);
+        auto [batchPredInp, _] = sliceDataset(inp, dummyPtr, batchSize, step);
 
         auto batchOutput = compute(batchPredInp, LayerMode::Eval);
         for (auto &row : batchOutput) {

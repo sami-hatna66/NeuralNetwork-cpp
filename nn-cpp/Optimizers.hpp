@@ -8,12 +8,14 @@ namespace Optimizers {
 
 template <typename T> class OptimizerBase {
   protected:
-    // Learning rate controls the amount that the weights are updated as we seek to minimize the Loss
+    // Learning rate controls the amount that the weights are updated as we seek
+    // to minimize the Loss
     // Small learning rates result in failure to train
     // Large learning rates make training unstable
     T learningRate;
     T currentLearningRate;
-    // Learning rate decays across iterations to keep initial updates large and then gradually decrease as loss falls into a local minimum
+    // Learning rate decays across iterations to keep initial updates large and
+    // then gradually decrease as loss falls into a local minimum
     T decay;
     T iterations;
 

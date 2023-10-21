@@ -16,9 +16,8 @@ void matmulKernel(const Vec2d<T> &a, const Vec2d<T> &b, Vec2d<T> &result,
     }
 }
 
-/**
- * Multithreaded matmul divides number of rows by number of available threads, then processes chunks in parallel
-*/
+// Multithreaded matmul divides number of rows by number of available threads,
+// then processes chunks in parallel
 template <typename T> Vec2d<T> operator*(const Vec2d<T> &a, const Vec2d<T> &b) {
     // assert(a[0].size() == b.size());
     Vec2d<T> result(a.size(), std::vector<T>(b[0].size(), 0.0));
@@ -204,7 +203,7 @@ template <typename T> Vec2d<T> transpose(const Vec2d<T> &mat) {
 
 template <typename T> T mean(const Vec2d<T> &mat) {
     T sum = 0.0;
-    for (auto& row : mat) {
+    for (auto &row : mat) {
         for (auto val : row) {
             sum += val;
         }
