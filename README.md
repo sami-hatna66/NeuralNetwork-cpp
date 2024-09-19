@@ -1,6 +1,6 @@
 # NeuralNetwork-cpp
 
-A from-scratch neural network library implemented in C++20. Certain core operations are accelerated using standard library multithreading.
+A from-scratch neural network library implemented in C++20. Certain core operations are accelerated using standard library multithreading to achieve CPU performance on a par with reference numpy implementations.
 
 ## Features
 
