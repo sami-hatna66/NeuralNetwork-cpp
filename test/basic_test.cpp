@@ -9,5 +9,5 @@ TEST(HelloTest, BasicAssertions) {
 }
 
 TEST(HelloTest, DummyFail) {
-  EXPECT_EQ(2, 4);
+  EXPECT_EQ(2, 5);
 }
