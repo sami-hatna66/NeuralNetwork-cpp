@@ -1,3 +1,5 @@
 build/
 .vscode/
 fashion_mnist_images/
+dress.png
+.DS_STORE

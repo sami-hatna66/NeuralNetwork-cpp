@@ -10,5 +10,8 @@ enable_testing()
 add_executable(basic_test basic_test.cpp)
 target_link_libraries(basic_test nn-cpp GTest::gtest_main)
 
+add_executable(test_all test_all.cpp)
+target_link_libraries(test_all nn-cpp GTest::gtest_main)
+
 include(GoogleTest)
-gtest_discover_tests(basic_test)
+gtest_discover_tests(basic_test test_all)
