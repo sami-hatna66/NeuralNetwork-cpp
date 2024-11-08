@@ -12,15 +12,12 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
 
       - name: Install gtest
-        run: sudo apt install -y libgtest-dev
-
-      - name: Install CMake
-        run: sudo apt install -y cmake
+        run: brew install googletest
 
       - name: Configure
         run: |
