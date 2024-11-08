@@ -2,22 +2,34 @@ name: Testing CI
 
 on:
   push:
-      branches: [ main ]
+    branches: [ main ]
   pull_request:
-      branches: [ main ]
+    branches: [ main ]
 
 jobs:
   build-and-test:
-      runs-on: ubuntu-latest
-      steps:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
-      - name: install gtest
-      run: sudo apt install -y libgtest-dev
-      - name: install cmake
-      run: sudo apt install -y cmake
-      - name: configure
-      run: mkdir build && cd build && cmake -DBUILD_SAMPLE=OFF -DBUILD_TESTS=ON ..
-      - name: compile
-      run: cmake --build .
-      - name: test
-      run: ./test/test_all
+
+      - name: Install gtest
+        run: sudo apt install -y libgtest-dev
+
+      - name: Install CMake
+        run: sudo apt install -y cmake
+
+      - name: Configure
+        run: |
+          mkdir build
+          cd build
+          cmake -DBUILD_SAMPLE=OFF -DBUILD_TESTS=ON ..
+
+      - name: Compile
+        run: |
+          cd build
+          cmake --build .
+
+      - name: Test
+        run: |
+          cd build
+          ./test/test_all
