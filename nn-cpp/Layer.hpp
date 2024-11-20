@@ -76,7 +76,7 @@ template <typename T> class DropoutLayer : public ModelLayer<T> {
     using ModelLayer<T>::inputs;
     using ModelLayer<T>::output;
     using ModelLayer<T>::dInputs;
- 
+
   public:
     DropoutLayer(T pRate);
     void compute(const Vec2d<T> &pInputs,

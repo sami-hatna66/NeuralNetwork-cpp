@@ -3,3 +3,4 @@ build/
 fashion_mnist_images/
 dress.png
 .DS_STORE
+format_matrix.py
