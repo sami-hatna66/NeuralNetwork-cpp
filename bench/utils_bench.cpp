@@ -6,7 +6,7 @@
 #include "utils.hpp"
 
 using time_unit = std::micro;
-constexpr std::string time_unit_str = "μs";
+const std::string time_unit_str = "μs";
 
 void benchmarkRunner(const std::function<void()>& func, std::string name) {
     std::string title = "=== " + name + " Benchmark ===";
@@ -37,6 +37,20 @@ void benchmarkRunner(const std::function<void()>& func, std::string name) {
     double meanTime = totalTime / benchmarkRuns;
     std::cout << "\e[1m" <<  "Avg. execution time: " << meanTime << time_unit_str << std::endl;
 
+    double variance = 0.0;
+    for (double time : runTimes) {
+        variance += (time - meanTime) * (time - meanTime);
+    }
+    variance /= benchmarkRuns;
+    double stdDevTime = std::sqrt(variance);
+    std::cout << "\e[1m" <<  "std: " << stdDevTime << time_unit_str << std::endl;
+
+    double minTime = *std::min_element(runTimes.begin(), runTimes.end());
+    std::cout << "\e[1m" <<  "Fastest time: " << minTime << time_unit_str << std::endl;
+
+    double maxTime = *std::max_element(runTimes.begin(), runTimes.end());
+    std::cout << "\e[1m" <<  "Slowest time: " << maxTime << time_unit_str << std::endl;
+
     std::string tail(title.length(), '=');
     std::cout << "\033[1;32m" << tail << "\033[0m" << std::endl;
 }
@@ -45,7 +59,7 @@ void matmul_2x2_2x2() {
     Vec2d<double> a {{1,2},{3,4}};
     Vec2d<double> b {{5,6},{7,8}};
     for (int i = 0; i < 100; i++) {
-    a * b;
+        a * b;
     }
 }
 
