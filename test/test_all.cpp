@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "basic_test.cpp"
-#include "utils_test.cpp"
+#include "utils_unit_tests.cpp"
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
