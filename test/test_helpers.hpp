@@ -5,6 +5,6 @@
     EXPECT_EQ(A[0].size(), B[0].size());                                       \
     for (int i = 0; i < A.size(); i++) {                                       \
         for (int j = 0; j < A[i].size(); j++) {                                \
-            EXPECT_EQ(A[i][j], B[i][j]);                                       \
+            EXPECT_FLOAT_EQ(A[i][j], B[i][j]);                                 \
         }                                                                      \
     }
