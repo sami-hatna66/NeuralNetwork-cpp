@@ -92,37 +92,3 @@ TYPED_TEST(UtilsIntegrationTests, AddSubTranspose) {
 
     VEC2D_EXPECT_EQ(result, expected)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
