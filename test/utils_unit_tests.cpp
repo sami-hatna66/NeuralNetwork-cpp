@@ -5,11 +5,11 @@
 typedef ::testing::Types<float, double> TestTypes;
 
 template <typename T>
-class UtilsTest : public ::testing::Test {};
+class UtilsUnitTests : public ::testing::Test {};
 
-TYPED_TEST_SUITE(UtilsTest, TestTypes);
+TYPED_TEST_SUITE(UtilsUnitTests, TestTypes);
 
-TYPED_TEST(UtilsTest, UtilsTestMatMulSmall) {
+TYPED_TEST(UtilsUnitTests, MatMulSmall) {
     Vec2d<TypeParam> a {{4, 9}, {3, 4}};
     Vec2d<TypeParam> b {{4, 9, 5}, {3, 4, 6}};
 
@@ -20,7 +20,7 @@ TYPED_TEST(UtilsTest, UtilsTestMatMulSmall) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMatMulMed) {
+TYPED_TEST(UtilsUnitTests, MatMulMed) {
     Vec2d<TypeParam> a {{9, 3, 0, 2, 4,},
                         {3, 0, 0, 3, 2,},
                         {1, 2, 5, 8, 5,},
@@ -79,7 +79,7 @@ TYPED_TEST(UtilsTest, UtilsTestMatMulMed) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMatMulBig) {
+TYPED_TEST(UtilsUnitTests, MatMulBig) {
     Vec2d<TypeParam> a {{9, 4, 7, 8, 3, 8, 0, 0, 6, 8, 9, 1, 7, 9, 7, 7, 0, 7, 1, 7},
                         {0, 2, 2, 6, 4, 6, 6, 3, 6, 6, 7, 1, 1, 2, 1, 4, 5, 2, 6, 4},
                         {1, 3, 4, 5, 9, 3, 0, 9, 2, 1, 1, 6, 4, 3, 6, 2, 0, 3, 8, 2},
@@ -208,7 +208,7 @@ TYPED_TEST(UtilsTest, UtilsTestMatMulBig) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestScalarMulSmall) {
+TYPED_TEST(UtilsUnitTests, ScalarMulSmall) {
     Vec2d<TypeParam> a {{4, 9}, {3, 4}};
 
     auto result = (TypeParam)2 * a;
@@ -218,7 +218,7 @@ TYPED_TEST(UtilsTest, UtilsTestScalarMulSmall) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestScalarMulMed) {
+TYPED_TEST(UtilsUnitTests, ScalarMulMed) {
     Vec2d<TypeParam> a {{9, 3, 0, 2, 4,},
                         {3, 0, 0, 3, 2,},
                         {1, 2, 5, 8, 5,},
@@ -256,7 +256,7 @@ TYPED_TEST(UtilsTest, UtilsTestScalarMulMed) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestScalarMulBig) {
+TYPED_TEST(UtilsUnitTests, ScalarMulBig) {
     Vec2d<TypeParam> a {{26,2,0,36,17,5,24,37,3,12,25,28,47,26,49,18,43,3,41,39,34,31,32,19,3,25,10,19,10,40,42,12,48,2,11,2,49,10,11,22,28,39,49,32,27,6,42,26,32,32},
                         {36,21,21,19,45,15,44,8,39,31,49,49,46,43,16,39,41,41,7,12,27,20,40,19,25,44,22,13,36,20,42,32,1,13,19,33,4,36,24,30,19,47,14,46,27,41,28,28,1,12},
                         {29,21,11,13,25,4,4,7,50,23,44,11,4,47,38,4,39,13,42,28,11,45,37,32,29,28,20,20,39,12,28,33,25,12,10,37,39,49,21,29,40,4,9,16,21,40,22,39,25,10},
@@ -304,7 +304,7 @@ TYPED_TEST(UtilsTest, UtilsTestScalarMulBig) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMatDivSmall) {
+TYPED_TEST(UtilsUnitTests, MatDivSmall) {
     Vec2d<TypeParam> a {{8, 1}, {30, 12}};
     Vec2d<TypeParam> b {{2, 1}, {10, 3}};
 
@@ -315,7 +315,7 @@ TYPED_TEST(UtilsTest, UtilsTestMatDivSmall) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMatDivMed) {
+TYPED_TEST(UtilsUnitTests, MatDivMed) {
     Vec2d<TypeParam> a {{9, 3, 3, 2, 4,},
                         {3, 3, 3, 3, 2,},
                         {1, 2, 5, 8, 5,},
@@ -368,7 +368,7 @@ TYPED_TEST(UtilsTest, UtilsTestMatDivMed) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMatDivBig) {
+TYPED_TEST(UtilsUnitTests, MatDivBig) {
     Vec2d<TypeParam> a {{95,70,40,61,46,74,85,35,16,82,93,61,84,28,21,49,74,29,16,25,96,75,75,40,83,65,45,17,78,42,92,82,22,15,28,54,54,64,60,64,45,75,73,67,78,15,60,32,66,89},
                         {16,81,91,54,71,82,51,92,46,71,25,37,40,79,87,37,24,39,45,43,34,61,61,46,79,24,25,79,41,74,87,89,62,74,94,52,36,29,28,21,21,89,85,47,14,34,88,26,79,50},
                         {76,17,47,98,67,14,25,48,11,88,69,71,29,45,89,79,72,72,20,65,24,82,21,35,80,16,91,66,57,50,50,78,69,20,79,46,36,75,47,74,77,92,57,79,23,80,77,43,46,45},
@@ -436,7 +436,7 @@ TYPED_TEST(UtilsTest, UtilsTestMatDivBig) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestPowerSmall) {
+TYPED_TEST(UtilsUnitTests, PowerSmall) {
     Vec2d<TypeParam> a {{4, 9}, {3, 4}};
 
     auto result = power(a, (TypeParam)2);
@@ -446,7 +446,7 @@ TYPED_TEST(UtilsTest, UtilsTestPowerSmall) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestPowerMed) {
+TYPED_TEST(UtilsUnitTests, PowerMed) {
     Vec2d<TypeParam> a {{54,13,14,64,51,83,35,59,30,30,76,75,81,17,61,81,16,61,87,38},
                         {83,36,25,58,38,82,13,64,69,56,51,85,33,94,58,31,55,89,75,47},
                         {93,51,52,55,89,20,89,29,13,27,37,57,95,89,43,29,65,63,11,84},
@@ -474,7 +474,7 @@ TYPED_TEST(UtilsTest, UtilsTestPowerMed) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestPowerBig) {
+TYPED_TEST(UtilsUnitTests, PowerBig) {
     Vec2d<TypeParam> a {{5,2,7,9,4,9,3,5,5,8,3,5,4,8,5,10,5,7,2,5,8,6,4,9,9,4,2,7,6,3,6,3,10,8,4,4,3,6,7,7,4,8,3,3,6,5,5,4,6,2,8,3,3,7,4,7,9,8,2,2,2,10,9,8,6,3,9,6,2,7,9,3,5,10,4},
                         {5,4,7,5,3,3,6,10,1,9,2,5,5,2,5,9,5,10,3,7,9,2,2,6,6,2,7,9,2,8,9,5,7,2,5,5,1,8,8,9,6,10,1,4,3,5,4,5,8,8,5,9,9,4,6,10,8,8,7,7,3,10,5,7,5,2,7,8,5,5,2,4,7,2,5},
                         {4,7,9,4,9,8,4,4,4,4,5,10,1,3,9,9,3,2,4,6,10,3,5,9,8,9,6,7,4,2,10,1,7,6,9,6,5,8,9,8,4,8,4,6,1,3,10,4,5,3,5,10,9,8,5,4,6,7,7,3,4,1,3,9,8,3,6,9,8,1,4,8,3,7,5},
@@ -582,7 +582,7 @@ TYPED_TEST(UtilsTest, UtilsTestPowerBig) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestTransposeSmall) {
+TYPED_TEST(UtilsUnitTests, TransposeSmall) {
     Vec2d<TypeParam> a {{4, 9}, {3, 4}, {5, 6}};
 
     auto result = transpose(a);
@@ -592,7 +592,7 @@ TYPED_TEST(UtilsTest, UtilsTestTransposeSmall) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestTransposeMed) {
+TYPED_TEST(UtilsUnitTests, TransposeMed) {
     Vec2d<TypeParam> a {{4,8,7,4,10,8,5,5,1,1,6,6,2,1,7},
                         {10,2,4,3,9,8,8,4,4,8,4,0,10,7,4},
                         {7,8,6,6,4,9,7,10,6,6,9,4,4,1,0},
@@ -625,7 +625,7 @@ TYPED_TEST(UtilsTest, UtilsTestTransposeMed) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestTransposeBig) {
+TYPED_TEST(UtilsUnitTests, TransposeBig) {
     Vec2d<TypeParam> a {{6,8,3,8,4,7,5,7,2,8,1,9,8,10,10,4,1,5,10,1},
                         {8,9,0,8,3,6,1,8,7,3,9,5,5,6,6,6,3,10,7,4},
                         {0,1,9,8,9,1,3,6,9,3,6,1,8,7,2,1,7,4,9,8},
@@ -703,7 +703,7 @@ TYPED_TEST(UtilsTest, UtilsTestTransposeBig) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMeanSmall) {
+TYPED_TEST(UtilsUnitTests, MeanSmall) {
     Vec2d<TypeParam> a {{4, 9}, {3, 4}};
 
     auto result = mean(a);
@@ -713,7 +713,7 @@ TYPED_TEST(UtilsTest, UtilsTestMeanSmall) {
     EXPECT_EQ(result, expected);
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMeanMed) {
+TYPED_TEST(UtilsUnitTests, MeanMed) {
     Vec2d<TypeParam> a {{69,68,9,23,16,29,51,58,12,17},
                         {97,55,84,48,84,91,30,19,85,87},
                         {84,67,94,68,38,4,49,48,38,90},
@@ -732,7 +732,7 @@ TYPED_TEST(UtilsTest, UtilsTestMeanMed) {
     EXPECT_FLOAT_EQ(result, expected);
 }
 
-TYPED_TEST(UtilsTest, UtilsTestMeanBig) {
+TYPED_TEST(UtilsUnitTests, MeanBig) {
     Vec2d<TypeParam> a {{170,877,697,458,253,305,745,191,792,6,795,812,12,926,39,850,299,79,741,434,644,699,605,866,467,904,275,673,153,399,746,740,668,940,608,707,822,792,301,783,704,333,527,592,772,169,514,132,991,680},
                         {924,828,50,488,312,842,80,368,892,613,532,871,729,798,319,151,898,78,238,681,749,192,464,82,655,354,992,111,11,397,819,68,551,486,167,702,653,650,880,85,134,360,516,494,103,907,792,93,770,190},
                         {307,175,63,772,464,901,904,603,645,637,683,873,784,882,266,135,987,893,531,249,69,424,63,519,611,989,0,941,77,498,832,220,413,379,685,130,938,131,117,226,897,656,608,193,646,142,467,976,112,436},
@@ -760,84 +760,3 @@ TYPED_TEST(UtilsTest, UtilsTestMeanBig) {
 
     EXPECT_FLOAT_EQ(result, expected);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
