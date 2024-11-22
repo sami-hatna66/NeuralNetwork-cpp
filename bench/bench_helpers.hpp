@@ -10,21 +10,25 @@
 using time_unit = std::micro;
 const std::string time_unit_str = "μs";
 
-template <typename SetupFunc, typename BenchFunc, typename... Params, typename... SetupArgs>
-void benchmarkRunner(const SetupFunc& setupFunc, const BenchFunc& benchFunc, std::string name, SetupArgs&&... setupArgs) {
+class BenchFixture {
+public:
+    BenchFixture() {}
+    virtual void setup() = 0;
+    virtual void run() = 0;
+};
+
+void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
     std::string title = "=== " + name + " Benchmark ===";
     std::cout << "\033[1;32m" << title << "\033[0m" << std::endl;
 
     constexpr int warmupRuns = 10;
     constexpr int benchmarkRuns = 100;
 
-    std::tuple<Params...> params;
-
     std::cout << "Warming up ..." << std::endl;
 
     for (int i = 0; i < warmupRuns; i++) {
-        setupFunc(params, std::forward<SetupArgs>(setupArgs)...);
-        std::apply(benchFunc, params);
+        benchFixture->setup();
+        benchFixture->run();
     }
 
     std::cout << "Running benchmark ..." << std::endl;
@@ -32,10 +36,10 @@ void benchmarkRunner(const SetupFunc& setupFunc, const BenchFunc& benchFunc, std
     std::vector<double> runTimes;
     runTimes.reserve(benchmarkRuns);
     for (int i = 0; i < benchmarkRuns; i++) {
-        setupFunc(params, std::forward<SetupArgs>(setupArgs)...);
+        benchFixture->setup();
 
         auto start = std::chrono::high_resolution_clock::now();
-        std::apply(benchFunc, params);
+        benchFixture->run();
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, time_unit> duration = end - start;
         runTimes.push_back(duration.count());
