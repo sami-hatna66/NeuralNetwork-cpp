@@ -1,70 +1,38 @@
-#include <iostream> 
-#include <vector>
 #include <chrono>
+#include <iostream>
 #include <numeric>
+#include <random>
+#include <ranges>
+#include <vector>
 
+#include "bench_helpers.hpp"
 #include "utils.hpp"
 
-using time_unit = std::micro;
-const std::string time_unit_str = "μs";
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<> dis(0, 100);
 
-void benchmarkRunner(const std::function<void()>& func, std::string name) {
-    std::string title = "=== " + name + " Benchmark ===";
-    std::cout << "\033[1;32m" << title << "\033[0m" << std::endl;
-
-    constexpr int warmupRuns = 10;
-    constexpr int benchmarkRuns = 100;
-
-    std::cout << "Warming up ..." << std::endl;
-
-    for (int i = 0; i < warmupRuns; i++) {
-        func();
+void setup_matmul(std::tuple<Vec2d<double>, Vec2d<double>> &params, int r1,
+                  int c1, int r2, int c2) {
+    auto &a = std::get<0>(params);
+    a.resize(r1, std::vector<double>(c1));
+    for (auto &row : a) {
+        std::ranges::generate(row, [&]() { return dis(gen); });
     }
 
-    std::cout << "Running benchmark ..." << std::endl;
-
-    std::vector<double> runTimes;
-    runTimes.reserve(benchmarkRuns);
-    for (int i = 0; i < benchmarkRuns; i++) {
-        auto start = std::chrono::high_resolution_clock::now();
-        func();
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, time_unit> duration = end - start;
-        runTimes.push_back(duration.count());
-    }
-
-    double totalTime = std::accumulate(runTimes.begin(), runTimes.end(), 0, std::plus<double>());
-    double meanTime = totalTime / benchmarkRuns;
-    std::cout << "\e[1m" <<  "Avg. execution time: " << meanTime << time_unit_str << std::endl;
-
-    double variance = 0.0;
-    for (double time : runTimes) {
-        variance += (time - meanTime) * (time - meanTime);
-    }
-    variance /= benchmarkRuns;
-    double stdDevTime = std::sqrt(variance);
-    std::cout << "\e[1m" <<  "std: " << stdDevTime << time_unit_str << std::endl;
-
-    double minTime = *std::min_element(runTimes.begin(), runTimes.end());
-    std::cout << "\e[1m" <<  "Fastest time: " << minTime << time_unit_str << std::endl;
-
-    double maxTime = *std::max_element(runTimes.begin(), runTimes.end());
-    std::cout << "\e[1m" <<  "Slowest time: " << maxTime << time_unit_str << std::endl;
-
-    std::string tail(title.length(), '=');
-    std::cout << "\033[1;32m" << tail << "\033[0m" << std::endl;
-}
-
-void matmul_2x2_2x2() {
-    Vec2d<double> a {{1,2},{3,4}};
-    Vec2d<double> b {{5,6},{7,8}};
-    for (int i = 0; i < 100; i++) {
-        a * b;
+    auto &b = std::get<1>(params);
+    b.resize(r2, std::vector<double>(c2));
+    for (auto &row : b) {
+        std::ranges::generate(row, [&]() { return dis(gen); });
     }
 }
+
+void bench_matmul(const Vec2d<double> &a, const Vec2d<double> &b) { a *b; }
 
 int main() {
-    benchmarkRunner(matmul_2x2_2x2, "matmul_2x2_2x2");
+    benchmarkRunner<decltype(setup_matmul), decltype(bench_matmul),
+                    Vec2d<double>, Vec2d<double>>(
+        setup_matmul, bench_matmul, "matmul_50x50_50x50", 50, 50, 50, 50);
 
     return 0;
 }
