@@ -56,8 +56,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    std::cout << "Loading train data ..." << std::endl;
     auto [xTrain, yTrain] = loadMnist(argv[1], "train");
+    std::cout << "Loading test data ..." << std::endl;
     auto [xTest, yTest] = loadMnist(argv[1], "test");
+
+    std::cout << "Pre-processing data ..." << std::endl;
 
     // Shuffle training data
     std::random_device r;
@@ -70,6 +74,8 @@ int main(int argc, char *argv[]) {
     // Scale features so they are between -1.0 and 1.0
     xTrain = (xTrain - 127.5) / 127.5;
     xTest = (xTest - 127.5) / 127.5;
+
+    std::cout << "Constructing model ..." << std::endl;
 
     Model<double, Accuracy::CategoricalAccuracy, Optimizers::Adam,
           Loss::CategoricalCrossEntropy>
