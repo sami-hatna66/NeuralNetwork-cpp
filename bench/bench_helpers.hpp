@@ -1,11 +1,8 @@
-#include <iostream> 
+#include <iostream>
 #include <vector>
 #include <chrono>
 #include <numeric>
 #include <functional>
-#include <tuple>
-
-#include "utils.hpp"
 
 using time_unit = std::micro;
 
@@ -16,10 +13,10 @@ public:
     virtual void run() = 0;
 };
 
-void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
+inline void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
     std::string title = "=== " + name + " Benchmark ===";
     std::cout << "\033[1;32m" << title << "\033[0m" << std::endl;
-
+    
     constexpr int warmupRuns = 10;
     constexpr int benchmarkRuns = 50;
 

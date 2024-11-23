@@ -64,60 +64,86 @@ public:
     }
 };
 
-class MatMulBenchFixture : public MatrixBinaryOpBenchFixture {
+class MatrixMulBenchFixture : public MatrixBinaryOpBenchFixture {
 public:
-    MatMulBenchFixture(int pR1, int pC1, int pR2, int pC2) : MatrixBinaryOpBenchFixture(pR1, pC1, pR2, pC2) {}
+    MatrixMulBenchFixture(int pR1, int pC1, int pR2, int pC2) : MatrixBinaryOpBenchFixture(pR1, pC1, pR2, pC2) {}
 
     void run() override {
         a * b;
     }
 };
 
-class MatDivBenchFixture : public MatrixBinaryOpBenchFixture {
+class MatrixDivBenchFixture : public MatrixBinaryOpBenchFixture {
 public:
-    MatDivBenchFixture(int pR1, int pC1, int pR2, int pC2) : MatrixBinaryOpBenchFixture(pR1, pC1, pR2, pC2) {}
+    MatrixDivBenchFixture(int pR1, int pC1, int pR2, int pC2) : MatrixBinaryOpBenchFixture(pR1, pC1, pR2, pC2) {}
 
     void run() override {
         a / b;
     }
 };
 
-class MatTransposeBenchFixture : public MatrixUnaryOpBenchFixture {
+class MatrixTransposeBenchFixture : public MatrixUnaryOpBenchFixture {
 public:
-    MatTransposeBenchFixture(int pR, int pC) : MatrixUnaryOpBenchFixture(pR, pC) {}
+    MatrixTransposeBenchFixture(int pR, int pC) : MatrixUnaryOpBenchFixture(pR, pC) {}
 
     void run() override {
         transpose(a);
     }
 };
 
+class MatrixMeanBenchFixture : public MatrixUnaryOpBenchFixture {
+public:
+    MatrixMeanBenchFixture(int pR, int pC) : MatrixUnaryOpBenchFixture(pR, pC) {}
+
+    void run() override {
+        mean(a);
+    }
+};
+
 int main() {
-    MatMulBenchFixture matMulBench_100x100_100x100 {100, 100, 100, 100};
-    benchmarkRunner(&matMulBench_100x100_100x100, "mat_mul_100x100_100x100");
+    // Matrix multiplication benchmarks ----------------------------------------------------------------------------
+    MatrixMulBenchFixture matrixMulBench_100x100_100x100 {100, 100, 100, 100};
+    benchmarkRunner(&matrixMulBench_100x100_100x100, "matrix_mul_100x100_100x100");
 
-    MatMulBenchFixture matMulBench_500x500_500x500 {500, 500, 500, 500};
-    benchmarkRunner(&matMulBench_500x500_500x500, "mat_mul_500x500_500x500");
+    MatrixMulBenchFixture matrixMulBench_500x500_500x500 {500, 500, 500, 500};
+    benchmarkRunner(&matrixMulBench_500x500_500x500, "matrix_mul_500x500_500x500");
 
-    MatMulBenchFixture matMulBench_1000x1000_1000x1000 {1000, 1000, 1000, 1000};
-    benchmarkRunner(&matMulBench_1000x1000_1000x1000, "mat_mul_1000x1000_1000x1000");
+    MatrixMulBenchFixture matrixMulBench_1000x1000_1000x1000 {1000, 1000, 1000, 1000};
+    benchmarkRunner(&matrixMulBench_1000x1000_1000x1000, "matrix_mul_1000x1000_1000x1000");
+    // -------------------------------------------------------------------------------------------------------------
 
-    MatDivBenchFixture matDivBench_100x100_100x100 {100, 100, 100, 100};
-    benchmarkRunner(&matDivBench_100x100_100x100, "mat_div_100x100_100x100");
+    // Matrix division benchmarks ----------------------------------------------------------------------------------
+    MatrixDivBenchFixture matrixDivBench_100x100_100x100 {100, 100, 100, 100};
+    benchmarkRunner(&matrixDivBench_100x100_100x100, "matrix_div_100x100_100x100");
 
-    MatDivBenchFixture matDivBench_500x500_500x500 {500, 500, 500, 500};
-    benchmarkRunner(&matDivBench_500x500_500x500, "mat_div_500x500_500x500");
+    MatrixDivBenchFixture matrixDivBench_500x500_500x500 {500, 500, 500, 500};
+    benchmarkRunner(&matrixDivBench_500x500_500x500, "matrix_div_500x500_500x500");
 
-    MatDivBenchFixture matDivBench_1000x1000_1000x1000 {1000, 1000, 1000, 1000};
-    benchmarkRunner(&matDivBench_1000x1000_1000x1000, "mat_div_1000x1000_1000x1000");
+    MatrixDivBenchFixture matrixDivBench_1000x1000_1000x1000 {1000, 1000, 1000, 1000};
+    benchmarkRunner(&matrixDivBench_1000x1000_1000x1000, "matrix_div_1000x1000_1000x1000");
+    // -------------------------------------------------------------------------------------------------------------
 
-    MatTransposeBenchFixture matTransposeBench_100x100 {100, 100};
-    benchmarkRunner(&matTransposeBench_100x100, "mat_transpose_100x100");
+    // Transpose benchmarks ----------------------------------------------------------------------------------------
+    MatrixTransposeBenchFixture matrixTransposeBench_100x100 {100, 100};
+    benchmarkRunner(&matrixTransposeBench_100x100, "matrix_transpose_100x100");
 
-    MatTransposeBenchFixture matTransposeBench_500x500 {500, 500};
-    benchmarkRunner(&matTransposeBench_500x500, "mat_transpose_500x500");
+    MatrixTransposeBenchFixture matrixTransposeBench_500x500 {500, 500};
+    benchmarkRunner(&matrixTransposeBench_500x500, "matrix_transpose_500x500");
 
-    MatTransposeBenchFixture matTransposeBench_1000x1000 {1000, 1000};
-    benchmarkRunner(&matTransposeBench_1000x1000, "mat_transpose_1000x1000");
+    MatrixTransposeBenchFixture matrixTransposeBench_1000x1000 {1000, 1000};
+    benchmarkRunner(&matrixTransposeBench_1000x1000, "matrix_transpose_1000x1000");
+    // -------------------------------------------------------------------------------------------------------------
+
+    // Matrix mean benchmarks --------------------------------------------------------------------------------------
+    MatrixMeanBenchFixture matrixMeanBench_100x100 {100, 100};
+    benchmarkRunner(&matrixMeanBench_100x100, "matrix_mean_100x100");
+
+    MatrixMeanBenchFixture matrixMeanBench_500x500 {500, 500};
+    benchmarkRunner(&matrixMeanBench_500x500, "matrix_mean_500x500");
+
+    MatrixMeanBenchFixture matrixMeanBench_1000x1000 {1000, 1000};
+    benchmarkRunner(&matrixMeanBench_1000x1000, "matrix_mean_1000x1000");
+    // -------------------------------------------------------------------------------------------------------------
 
     return 0;
 }
