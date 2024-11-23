@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <gtest/gtest.h>
 #include "test_helpers.hpp"
 #include "Layer.hpp"
@@ -23,19 +22,6 @@ TYPED_TEST(LayerUnitTests, DenseLayerInit) {
     EXPECT_EQ(layer.getWeightRegularizerL2(), 2);
     EXPECT_EQ(layer.getBiasRegularizerL1(), 3);
     EXPECT_EQ(layer.getBiasRegularizerL2(), 4);
-}
-
-template<typename T>
-void populateVec2dWithSequentialData(Vec2d<T>& vec, int rows, int cols, int start = 0) {
-    vec.resize(rows, std::vector<T>(cols));
-    int counter = start;
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            vec[i][j] = counter;
-            counter += 1;
-            if (counter > 500) counter = start;
-        }
-    }
 }
 
 TYPED_TEST(LayerUnitTests, DenseLayerCompute) {

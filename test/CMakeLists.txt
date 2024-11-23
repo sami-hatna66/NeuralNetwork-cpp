@@ -19,6 +19,9 @@ target_link_libraries(utils_integration_tests nn-cpp GTest::gtest_main)
 add_executable(layer_unit_tests layer_unit_tests.cpp)
 target_link_libraries(layer_unit_tests nn-cpp GTest::gtest_main)
 
+add_executable(layer_integration_tests layer_integration_tests.cpp)
+target_link_libraries(layer_integration_tests nn-cpp GTest::gtest_main)
+
 add_executable(test_all test_all.cpp)
 target_link_libraries(test_all nn-cpp GTest::gtest_main)
 
