@@ -1,3 +1,4 @@
+#include "gtest/gtest.h"
 #include <gtest/gtest.h>
 #include "test_helpers.hpp"
 #include "Layer.hpp"
@@ -25,14 +26,14 @@ TYPED_TEST(LayerUnitTests, DenseLayerInit) {
 }
 
 template<typename T>
-void populateVec2dWithSequentialData(Vec2d<T>& vec, int rows, int cols) {
+void populateVec2dWithSequentialData(Vec2d<T>& vec, int rows, int cols, int start = 0) {
     vec.resize(rows, std::vector<T>(cols));
-    int counter = 0;
+    int counter = start;
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             vec[i][j] = counter;
             counter += 1;
-            if (counter > 500) counter = 0;
+            if (counter > 500) counter = start;
         }
     }
 }
@@ -304,4 +305,93 @@ TYPED_TEST(LayerUnitTests, DenseLayerBackpropL2Reg) {
                                       {70870, 218670, 366470, 514270, 662070, 809870, 957670, 1105470, 1253270, 1401070, 1548870, 1696670, 1844470, 1992270, 2140070, 2287870, 2435670, 2583470, 2731270, 2879070, },
                                       {74670, 230470, 386270, 542070, 697870, 853670, 1009470, 1165270, 1321070, 1476870, 1632670, 1788470, 1944270, 2100070, 2255870, 2411670, 2567470, 2723270, 2879070, 3034870, }};
     VEC2D_EXPECT_EQ(layer.getDInputs(), expectedDInputs);
+}
+
+TYPED_TEST(LayerUnitTests, DropoutLayerComputeTrain) {
+    Layers::DropoutLayer<TypeParam> layer {0.2};
+    
+    Vec2d<TypeParam> inputs;
+    populateVec2dWithSequentialData(inputs, 50, 50, 1);
+
+    layer.compute(inputs, LayerMode::Training);
+
+    auto output = layer.getOutput();
+
+    EXPECT_EQ(output.size(), 50);
+    EXPECT_EQ(output[0].size(), 50);
+
+    TypeParam zero_count = 0;
+    for (int i = 0; i < output.size(); i++) {
+        for (int j = 0; j < output[i].size(); j++) {
+            if (output[i][j] == (TypeParam)0) zero_count++;
+        }
+    }
+    TypeParam actual_rate = zero_count / 2500;
+
+    EXPECT_NEAR(actual_rate, 0.2, 0.05);
+}
+
+TYPED_TEST(LayerUnitTests, DropoutLayerComputeEval) {
+    Layers::DropoutLayer<TypeParam> layer {0.2};
+    
+    Vec2d<TypeParam> inputs;
+    populateVec2dWithSequentialData(inputs, 50, 50, 1);
+
+    layer.compute(inputs, LayerMode::Eval);
+
+    VEC2D_EXPECT_EQ(layer.getOutput(), inputs);
+}
+
+TYPED_TEST(LayerUnitTests, DropoutLayerBackprop) {
+    Layers::DropoutLayer<TypeParam> layer {0.3};
+    
+    Vec2d<TypeParam> inputs;
+    populateVec2dWithSequentialData(inputs, 50, 50, 1);
+
+    layer.compute(inputs, LayerMode::Training);
+
+    Vec2d<TypeParam> dValues;
+    populateVec2dWithSequentialData(dValues, 50, 50, 1);
+
+    layer.backward(dValues);
+
+    auto dInputs = layer.getDInputs();
+
+    EXPECT_EQ(dInputs.size(), 50);
+    EXPECT_EQ(dInputs[0].size(), 50);
+
+    TypeParam zero_count = 0;
+    for (int i = 0; i < dInputs.size(); i++) {
+        for (int j = 0; j < dInputs[i].size(); j++) {
+            if (dInputs[i][j] == (TypeParam)0) zero_count++;
+        }
+    }
+    TypeParam actual_rate = zero_count / 2500;
+
+    EXPECT_NEAR(actual_rate, 0.3, 0.05);
+}
+
+TYPED_TEST(LayerUnitTests, InputLayerCompute) {
+    Layers::InputLayer<TypeParam> layer {};
+
+    Vec2d<TypeParam> inputs;
+    populateVec2dWithSequentialData(inputs, 50, 50);
+
+    layer.compute(inputs);
+
+    VEC2D_EXPECT_EQ(layer.getOutput(), inputs);
+}
+
+TYPED_TEST(LayerUnitTests, InputLayerBackprop) {
+    Layers::InputLayer<TypeParam> layer {};
+
+    Vec2d<TypeParam> inputs;
+    populateVec2dWithSequentialData(inputs, 50, 50);
+
+    layer.compute(inputs);
+
+    Vec2d<TypeParam> dValues;
+    populateVec2dWithSequentialData(dValues, 50, 50);
+
+    VEC2D_EXPECT_EQ(layer.getOutput(), inputs);
 }
