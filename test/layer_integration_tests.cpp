@@ -35,7 +35,7 @@ TYPED_TEST(LayerIntegrationTests, DenseReluDenseCCE) {
     dense2.compute(relu.getOutput());
     auto result = cce.calculate(dense2.getOutput(), actualY);
 
-    EXPECT_NEAR(result, -2.209347, 1);
+    EXPECT_NEAR(result, -2.209347, 0.1);
 }
 
 TYPED_TEST(LayerIntegrationTests, DenseSoftmaxDenseBCE) {

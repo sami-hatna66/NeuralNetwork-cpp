@@ -1,3 +1,6 @@
+#ifndef bench_helpers_hpp
+#define bench_helpers_hpp
+
 #include <iostream>
 #include <vector>
 #include <chrono>
@@ -62,3 +65,5 @@ inline void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
     std::string tail(title.length(), '=');
     std::cout << "\033[1;32m" << tail << "\033[0m" << std::endl;
 }
+
+#endif
