@@ -118,6 +118,7 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
 
             auto predictions = layers[layers.size() - 1]->predict(output);
             auto calcAccuracy = accuracy.calculate(predictions, batchY);
+            savedAccuracy = calcAccuracy;
 
             backward(output, batchY);
 
@@ -185,6 +186,14 @@ void Model<T, AccuracyType, OptimizerType, LossType>::train(
                       << ", loss: " << valLoss << std::endl;
         }
     }
+}
+
+template <typename T, template <typename> class AccuracyType,
+          template <typename> class OptimizerType,
+          template <typename> class LossType>
+T
+Model<T, AccuracyType, OptimizerType, LossType>::getAccuracy() {
+    return savedAccuracy;
 }
 
 template <typename T, template <typename> class AccuracyType,

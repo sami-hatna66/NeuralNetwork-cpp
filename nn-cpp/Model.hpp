@@ -24,6 +24,8 @@ class Model {
     LossActivation::SoftmaxCCE<T> lossAcc;
     bool useLossAcc = false;
 
+    T savedAccuracy = 0;
+
     Vec2d<T> compute(Vec2d<T> &X, LayerMode mode);
     void backward(Vec2d<T> &output, Vec2d<T> &actualY);
 
@@ -42,6 +44,7 @@ class Model {
                std::unique_ptr<Vec2d<T>> testX, std::unique_ptr<Vec2d<T>> testY,
                int epochs = 1, int batchSize = 0);
     Vec2d<T> predict(std::unique_ptr<Vec2d<T>> inp, int batchSize = 0);
+    T getAccuracy();
 };
 
 #endif

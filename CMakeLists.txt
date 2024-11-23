@@ -5,7 +5,9 @@ set(CMAKE_CXX_FLAGS "-ffast-math")
 
 option(BUILD_SAMPLE "Build the MNIST sample network (requires OpenCV)" ON)
 
-option(BUILD_TESTS "Build library tests" ON)
+option(BUILD_UNIT_TESTS "Build library unit tests" ON)
+option(BUILD_INTEGRATION_TESTS "Build library integration tests" ON)
+option(BUILD_SYSTEM_TESTS "Build library system tests" OFF)
 
 option(BUILD_BENCH "Build library benchmarks" ON)
 
@@ -17,13 +19,14 @@ if (BUILD_SAMPLE)
     add_subdirectory(sample)
 endif()
 
-if (BUILD_TESTS)
+if (BUILD_UNIT_TESTS OR BUILD_INTEGRATION_TESTS OR BUILD_SYSTEM_TESTS)
     add_subdirectory(test)
+endif()
 
+if (BUILD_SYSTEM_TESTS)
     set(URLS
-    "https://www.kaggle.com/api/v1/datasets/download/samihatna/fashion-mnist"
-    "https://www.kaggle.com/api/v1/datasets/download/samihatna/fashion-mnist-system-test"
-)
+        "https://www.kaggle.com/api/v1/datasets/download/samihatna/fashion-mnist"
+    )
 
     set(DEST_DIR "${CMAKE_BINARY_DIR}/test")
     file(MAKE_DIRECTORY ${DEST_DIR})
@@ -33,13 +36,10 @@ if (BUILD_TESTS)
         message(FATAL_ERROR "Unzip tool not found. Please install 'unzip' and try again.")
     endif()
 
-    set(ARCHIVE_ZIPS "")
-    set(UNZIP_TARGETS "")
-
     foreach(URL ${URLS})
         get_filename_component(FILENAME ${URL} NAME_WE)
         set(ARCHIVE_ZIP "${CMAKE_BINARY_DIR}/${FILENAME}.zip")
-        list(APPEND ARCHIVE_ZIPS ${ARCHIVE_ZIP})
+        set(UNZIPPED_DIR "${DEST_DIR}/${FILENAME}")
 
         file(DOWNLOAD
             ${URL}
@@ -47,20 +47,21 @@ if (BUILD_TESTS)
             SHOW_PROGRESS
             STATUS DOWNLOAD_STATUS
         )
-        
-        set(UNZIPPED_DIR "${DEST_DIR}/${FILENAME}")
-        add_custom_command(
-            OUTPUT ${UNZIPPED_DIR}
-            COMMAND ${UNZIP_TOOL} ${ARCHIVE_ZIP} -d ${UNZIPPED_DIR} > /dev/null
-            DEPENDS ${ARCHIVE_ZIP}
-            COMMENT "Unzipping ${ARCHIVE_ZIP} into ${UNZIPPED_DIR}"
-        )
 
-        list(APPEND UNZIP_TARGETS ${UNZIPPED_DIR})
+        if(NOT EXISTS ${UNZIPPED_DIR})
+            execute_process(
+                COMMAND ${UNZIP_TOOL} ${ARCHIVE_ZIP} -d ${UNZIPPED_DIR}
+                RESULT_VARIABLE UNZIP_RESULT
+                OUTPUT_QUIET
+                ERROR_QUIET
+            )
+            if(NOT UNZIP_RESULT EQUAL 0)
+                message(FATAL_ERROR "Failed to unzip ${ARCHIVE_ZIP}. Please check the file or unzip tool.")
+            endif()
+        endif()
     endforeach()
-
-    add_custom_target(DownloadAndUnzip ALL DEPENDS ${UNZIP_TARGETS})
 endif()
+
 
 if (BUILD_BENCH)
     add_subdirectory(bench)

@@ -17,7 +17,7 @@ To compile the library:
 
 ```shell
 mkdir build && cd build/
-cmake -G Ninja -DBUILD_SAMPLE=OFF -DBUILD_TESTS=ON -DBUILD_BENCH=ON ..
+cmake -G Ninja -DBUILD_SAMPLE=ON -DBUILD_UNIT_TESTS=ON -DBUILD_INTEGRATION_TESTS=ON -DBUILD_SYSTEM_TESTS=OFF -DBUILD_BENCH=ON ..
 ninja
 ```
 
