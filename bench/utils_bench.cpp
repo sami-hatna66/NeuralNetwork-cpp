@@ -1,5 +1,6 @@
 #include <random>
 #include <vector>
+#include <algorithm>
 
 #include "bench_helpers.hpp"
 #include "utils.hpp"
