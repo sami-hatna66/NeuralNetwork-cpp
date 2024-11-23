@@ -34,6 +34,24 @@ DenseLayer<T>::DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1,
 }
 
 template <typename T>
+DenseLayer<T>::DenseLayer(Vec2d<T> pWeights, Vec2d<T> pBiases, T pWeightRegularizerL1,
+                          T pWeightRegularizerL2, T pBiasRegularizerL1,
+                          T pBiasRegularizerL2)
+    : weightRegularizerL1{pWeightRegularizerL1},
+      weightRegularizerL2{pWeightRegularizerL2},
+      biasRegularizerL1{pBiasRegularizerL1},
+      biasRegularizerL2{pBiasRegularizerL2}, ModelLayer<T>{} {
+    weights = pWeights;
+    biases = pBiases;
+    biasMomentums.push_back(biases[0]);
+    dBiases.push_back({});
+
+    assert(weights[0].size() == biases[0].size());
+
+    isTrainable = true;
+}
+
+template <typename T>
 void DenseLayer<T>::compute(const Vec2d<T> &pInputs, LayerMode mode) {
     inputs = pInputs;
     // output = (input * weights) + biases

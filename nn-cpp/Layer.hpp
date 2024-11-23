@@ -5,6 +5,7 @@
 #include "utils.hpp"
 
 #include <random>
+#include <cassert>
 
 namespace Layers {
 
@@ -39,6 +40,10 @@ template <typename T> class DenseLayer : public ModelLayer<T> {
     DenseLayer(int numInputs, int numNeurons, T pWeightRegularizerL1 = 0,
                T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
                T pBiasRegularizerL2 = 0);
+    DenseLayer(Vec2d<T> pWeights, Vec2d<T> pBiases, T pWeightRegularizerL1 = 0,
+               T pWeightRegularizerL2 = 0, T pBiasRegularizerL1 = 0,
+               T pBiasRegularizerL2 = 0);
+
     void compute(const Vec2d<T> &pInputs,
                  LayerMode mode = LayerMode::Training) override;
     void backward(const Vec2d<T> &dValues) override;
@@ -76,7 +81,7 @@ template <typename T> class DropoutLayer : public ModelLayer<T> {
     using ModelLayer<T>::inputs;
     using ModelLayer<T>::output;
     using ModelLayer<T>::dInputs;
- 
+
   public:
     DropoutLayer(T pRate);
     void compute(const Vec2d<T> &pInputs,

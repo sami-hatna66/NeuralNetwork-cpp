@@ -2,8 +2,10 @@
 #define utils_hpp
 
 #include <cassert>
+#include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <numeric>
 #include <thread>
 #include <vector>
