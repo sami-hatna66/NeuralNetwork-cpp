@@ -21,7 +21,7 @@ cmake -G Ninja -DBUILD_SAMPLE=OFF -DBUILD_TESTS=ON -DBUILD_BENCH=ON ..
 ninja
 ```
 
-The repo also contains a sample network for classifying images of clothing items. To run the sample OpenCV must be installed, you must download the [Fashion MNIST](https://www.kaggle.com/datasets/zalando-research/fashionmnist) dataset, and you need an image of a clothing item to test the network on. To build the sample, set the CMake option `-DBUILD_SAMPLE=ON`. Run as follows:
+The repo also contains a sample network for classifying images of clothing items. To run the sample OpenCV must be installed, you must download the [Fashion MNIST](https://www.kaggle.com/datasets/samihatna/fashion-mnist) dataset, and you need an image of a clothing item to test the network on. To build the sample, set the CMake option `-DBUILD_SAMPLE=ON`. Run as follows:
 
 ```shell
 ./sample/mnistsample ~/fashion_mnist_images ~/dress.png
