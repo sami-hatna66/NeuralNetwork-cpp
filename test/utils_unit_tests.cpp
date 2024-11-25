@@ -446,6 +446,26 @@ TYPED_TEST(UtilsUnitTests, PowerSmall) {
     VEC2D_EXPECT_EQ(result, expected)
 }
 
+TYPED_TEST(UtilsUnitTests, ScalarDivSmall) {
+    Vec2d<TypeParam> a {{8, 4}, {30, 12}};
+
+    auto result = a / (TypeParam)2;
+
+    Vec2d<TypeParam> expected {{4, 2}, {15, 6}};
+
+    VEC2D_EXPECT_EQ(result, expected)
+}
+
+TYPED_TEST(UtilsUnitTests, ScalarSubSmall) {
+    Vec2d<TypeParam> a {{8, 4}, {30, 12}};
+
+    auto result = a - (TypeParam)2;
+
+    Vec2d<TypeParam> expected {{6, 2}, {28, 10}};
+
+    VEC2D_EXPECT_EQ(result, expected)
+}
+
 TYPED_TEST(UtilsUnitTests, PowerMed) {
     Vec2d<TypeParam> a {{54,13,14,64,51,83,35,59,30,30,76,75,81,17,61,81,16,61,87,38},
                         {83,36,25,58,38,82,13,64,69,56,51,85,33,94,58,31,55,89,75,47},
