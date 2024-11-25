@@ -7,6 +7,8 @@
 #include <numeric>
 #include <functional>
 
+#include "utils.hpp"
+
 using time_unit = std::micro;
 
 class BenchFixture {
@@ -25,15 +27,18 @@ inline void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
 
     std::cout << "Warming up ..." << std::endl;
 
+    std::cout.setstate(std::ios_base::failbit);
     for (int i = 0; i < warmupRuns; i++) {
         benchFixture->setup();
         benchFixture->run();
     }
 
+    std::cout.clear();
     std::cout << "Running benchmark ..." << std::endl;
 
     std::vector<double> runTimes;
     runTimes.reserve(benchmarkRuns);
+    std::cout.setstate(std::ios_base::failbit);
     for (int i = 0; i < benchmarkRuns; i++) {
         benchFixture->setup();
 
@@ -43,6 +48,8 @@ inline void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
         std::chrono::duration<double, time_unit> duration = end - start;
         runTimes.push_back(duration.count());
     }
+
+    std::cout.clear();
 
     double totalTime = std::accumulate(runTimes.begin(), runTimes.end(), 0, std::plus<double>());
     double meanTime = totalTime / benchmarkRuns;
@@ -64,6 +71,16 @@ inline void benchmarkRunner(BenchFixture* benchFixture, std::string name) {
 
     std::string tail(title.length(), '=');
     std::cout << "\033[1;32m" << tail << "\033[0m" << std::endl;
+}
+
+template<typename T>
+void populateVec2dWithOnes(Vec2d<T>& vec, int rows, int cols) {
+    vec.resize(rows, std::vector<T>(cols));
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            vec[i][j] = 1;
+        }
+    }
 }
 
 #endif

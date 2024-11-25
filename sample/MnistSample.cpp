@@ -77,6 +77,11 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Constructing model ..." << std::endl;
 
+    std::cout << xTrain.size() << " " << xTrain[0].size() << std::endl;
+    std::cout << yTrain.size() << " " << yTrain[0].size() << std::endl;
+    std::cout << xTest.size() << " " << xTest[0].size() << std::endl;
+    std::cout << yTest.size() << " " << yTest[0].size() << std::endl;
+
     Model<double, Accuracy::CategoricalAccuracy, Optimizers::Adam,
           Loss::CategoricalCrossEntropy>
         m;
