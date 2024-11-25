@@ -8,10 +8,16 @@ option(BUILD_SAMPLE "Build the MNIST sample network (requires OpenCV)" ON)
 option(BUILD_UNIT_TESTS "Build library unit tests" ON)
 option(BUILD_INTEGRATION_TESTS "Build library integration tests" ON)
 option(BUILD_SYSTEM_TESTS "Build library system tests" OFF)
+option(ENABLE_GCOV "Generate gcov reports" OF)
 
 option(BUILD_BENCH "Build library benchmarks" ON)
 
 project(nn-cpp)
+
+if (ENABLE_GCOV)
+    add_compile_options(-g -O0 --coverage)
+    add_link_options(--coverage)
+endif()
 
 add_subdirectory(nn-cpp)
 

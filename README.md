@@ -70,3 +70,13 @@ m.train(std::make_unique<Vec2d<double>>(xTrain),
         std::make_unique<Vec2d<double>>(xTest),
         std::make_unique<Vec2d<double>>(yTest), 10, 128);
 ```
+
+## Generating Code Coverage Reports
+
+```bash
+cd build
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DBUILD_SAMPLE=ON -DBUILD_UNIT_TESTS=ON -DBUILD_INTEGRATION_TESTS=ON -DBUILD_SYSTEM_TESTS=OFF -DBUILD_BENCH=ON -DENABLE_GCOV=ON ..
+ninja
+./test/test_all
+cmake --build . --target coverage
+```
